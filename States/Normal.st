@@ -19,10 +19,10 @@ facep2 = 1
 
 [State 200, Explod]
 type = Explod
-trigger1 = AnimElem = 3
+trigger1 = AnimElem = 2
 anim = 7010
 ID = 200
-pos = -15, -20
+pos = 7, -2
 postype = p1  ;p2,front,back,left,right
 facing = 1
 vfacing = 1
@@ -50,17 +50,18 @@ hitflag = MAF                    ;Flags of conditions that move can hit
 priority = 4, Hit                ;Attack priority: 0 (least) to 7 (most), 4 default
 ;Hit/Miss/Dodge type (Def: Hit)
 pausetime = 8, 8                 ;Time attacker pauses, time opponent shakes
-sparkno = S7000                      ;Spark anim no (Def: set above)
-sparkxy = 0, -3              ;X-offset for the "hit spark" rel. to p2,
+sparkno = S7005                      ;Spark anim no (Def: set above)
+sparkxy = 0, 0               ;X-offset for the "hit spark" rel. to p2,
 ;Y-offset for the spark rel. to p1
 hitsound = S7020, 0                  ;Sound to play on hit
 guardsound = 6, 0                ;Sound to play on guard
 ground.type = High               ;Type: High, Low, Trip (def: Normal)
 ground.slidetime = 3             ;Time that the opponent slides back
-ground.hittime  = 13             ;Time opponent is in hit state
-ground.velocity = -0.8             ;Velocity at which opponent is pushed
+ground.hittime  = 10             ;Time opponent is in hit state
+ground.velocity = -1.4             ;Velocity at which opponent is pushed
+airguard.velocity = -1.9,-.4     ;Guard velocity in air (def: (air.xvel*1.5, air.yvel/2))
 air.type = High                  ;Type: High, Low, Trip (def: same as ground.type)
-air.velocity = -0.8,-.8           ;X-velocity at which opponent is pushed,
+air.velocity = -1.4,-.8           ;X-velocity at which opponent is pushed,
 ;Y-velocity at which opponent is pushed
 air.hittime = 12                 ;Time before opponent regains control in air
 palfx.add = 200, 200, 200
@@ -70,14 +71,6 @@ getpower = IfElse(Var(21) > 0, 0, 72), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
 ground.cornerpush.veloff = 0
 air.cornerpush.veloff = 0
-
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.95
-persistent = 0
-ignorehitpause = 1
-
 
 [State 200, 2]
 type = PlaySnd
@@ -111,10 +104,10 @@ value = S7000, 0
 
 [State 210, Explod]
 type = Explod
-trigger1 = AnimElem = 3
+trigger1 = AnimElem = 2
 anim = 7011
 ID = 210
-pos = 0, -15
+pos = 7, -7
 postype = p1  ;p2,front,back,left,right
 facing = 1
 vfacing = 1
@@ -124,12 +117,13 @@ accel = 0,0
 random = 0,0
 removetime = -2
 scale = 1,1
-sprpriority = -1
+sprpriority = 2
 ontop = 0
 shadow = 0,0,0
 ownpal = 1
 removeongethit = 1
 ignorehitpause = 1
+
 
 [State 210, Hit1]
 type = HitDef
@@ -140,15 +134,15 @@ damage    = 23
 guardflag = M
 hitflag = MAF
 pausetime = 12,12
-sparkno = S7001
-sparkxy = -5, -15
+sparkno = S7006
+sparkxy = -5, -25
 hitsound   = S7040,1
 guardsound = 6,0
 ground.type = High
 ground.slidetime = 0
-ground.hittime  = 15
-ground.velocity = -1.5, -3
-air.velocity = -1.5,-3
+ground.hittime  = 20
+ground.velocity = -.5, -4
+air.velocity = -.5,-4
 ground.cornerpush.veloff = 0;
 air.cornerpush.veloff = 0;
 getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 36, 72)), IfElse(Var(21) > 0, 0, 18)
@@ -156,13 +150,6 @@ givepower = 18, 18
 palfx.add = 200, 200, 200
 palfx.mul = 256, 256, 256
 palfx.time = 8
-
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.85
-persistent = 0
-ignorehitpause = 1
 
 [State 210, 5]
 type = ChangeState
@@ -191,8 +178,8 @@ value = S7000, 1
 
 [State 220, Explod]
 type = Explod
-trigger1 = AnimElem = 4
-anim = 7012
+trigger1 = AnimElem = 3
+anim = -1;7012
 ID = 220
 pos = 7, -5
 postype = p1  ;p2,front,back,left,right
@@ -211,39 +198,35 @@ ownpal = 1
 removeongethit = 1
 ignorehitpause = 1
 
-[State 620, 3]
-type = HitDef
-trigger1 = !Time
-attr = S, NA
-damage = 72
-guardflag = HA
-priority = 4
-pausetime = 12, 12
-sparkno = S7002
-sparkxy = -5, -20
-hitsound   = S7020,2
+[State 220, 2]
+type = Projectile
+trigger1 = Animelem = 3
+attr = S, NP
+offset = 16, -15
+projID = 220
+projanim = 7006
+projhitanim = 7002
+projremovetime = 18
+velocity = 4,0
+animtype  = Hard
+damage    = 42
+guardflag = MAF
+pausetime = 12,12
+sparkno = -1
+hitsound   = S7020,3
 guardsound = 6,0
-animtype = DiagUp
 ground.type = High
-ground.slidetime = 12
-ground.hittime  = 14
-ground.velocity = -.5, -7
-air.velocity = -.5, -7
-yaccel = 0.3
-getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 36, 72)), IfElse(Var(21) > 0, 0, 18)
+ground.slidetime = 14
+ground.hittime  = 17
+ground.velocity = -4
+air.velocity = -4,-2
+getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 216)), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
-palfx.add = 200, 200, 200
-palfx.mul = 256, 256, 256
+palfx.add = 128, 100, 7
+palfx.mul = 256,256,256
 palfx.time = 8
-fall = 1
-fall.recover = 0
-
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.78
-persistent = 0
-ignorehitpause = 1
+ground.cornerpush.veloff = -2;
+air.cornerpush.veloff = -2;
 
 [State 220, 3]
 type = ChangeState
@@ -276,10 +259,10 @@ value = S7010, 1
 
 [State 200, Explod]
 type = Explod
-trigger1 = AnimElem = 3
+trigger1 = AnimElem = 2
 anim = 7013
 ID = 200
-pos = 18, 0
+pos = 7, -7
 postype = p1  ;p2,front,back,left,right
 facing = 1
 vfacing = 1
@@ -307,7 +290,7 @@ hitflag = MAF
 guardflag = M
 pausetime = 8, 8
 sparkno = S7005
-sparkxy = -5,0
+sparkxy = 0,-20
 hitsound   = S7040,0
 guardsound = 6,0
 ground.type = Low
@@ -322,13 +305,6 @@ palfx.mul = 256, 256, 256
 palfx.time = 8
 ground.cornerpush.veloff = -2
 air.cornerpush.veloff = -2
-
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.95
-persistent = 0
-ignorehitpause = 1
 
 [State 400, 4]
 type = ChangeState
@@ -351,35 +327,40 @@ facep2 = 1
 
 [State 410, 1]
 type = PlaySnd
-trigger1 = AnimElem = 2
+trigger1 = AnimElem = 3
 value = S7000, 0
 
-[State 200, Explod]
-type = Explod
-trigger1 = AnimElem = 3
-anim = 7013
-ID = 200
-pos = 25, -22
+[State 420, Explod]
+type = Helper
+trigger1 = AnimElem = 2
+stateno = 411
+ID = 410
+pos = 10,-10
 postype = p1  ;p2,front,back,left,right
 facing = 1
-vfacing = -1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
 scale = 1,1
 sprpriority = 2
-ontop = 0
-shadow = 0,0,0
 ownpal = 1
-removeongethit = 1
 ignorehitpause = 1
 
+[State 410, 4]
+type = ChangeState
+trigger1 = AnimTime = 0
+value = 11
+ctrl = 1
+
+;Ice Attack
+[Statedef 411]
+type = C
+physics = N
+movetype = A
+velset = 0, 0
+sprpriority = 2
+anim = 7015
 
 [State 410, 2]
 type = HitDef
-trigger1 = AnimElem = 3
+trigger1 = Parent, AnimElem = 3
 attr = C, NA
 damage    = 34
 animtype  = Medium
@@ -393,28 +374,81 @@ guardsound = 6,0
 ground.type = Low
 ground.slidetime = 8
 ground.hittime  = 17
-ground.velocity = -2
+ground.velocity = -2, -4
 air.velocity = -3,-4
-getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 144)), IfElse(Var(21) > 0, 0, 36)
+getpower = IfElse(Parent, Var(21) > 0, 0, ifelse(p2movetype = H, 72, 144)), IfElse(Parent, Var(21) > 0, 0, 36)
 givepower = 36, 36
-palfx.add = 200, 200, 200
-palfx.mul = 256, 256, 256
-palfx.time = 8
+palfx.invertall = 0
+palfx.color = 0
+palfx.add = 80, 80, 180
+palfx.time = 18
 ground.cornerpush.veloff = 0
 air.cornerpush.veloff = 0
 
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.85
-persistent = 0
+[State 410,Got Hit]
+type = NotHitBy
+trigger1 = 1
+value = , AT
 ignorehitpause = 1
 
-[State 410, 4]
+[State 410,Got Hit]
+type = HitOverride
+trigger1 = 1
+attr = SCA, AA, AP
+stateno = 412
+ignorehitpause = 1
+
+[State 410,End]
 type = ChangeState
-trigger1 = AnimTime = 0
-value = 11
-ctrl = 1
+trigger1 = !AnimTime
+trigger2 = MoveContact
+trigger3 = Parent, StateNo != 410
+value = 412
+ctrl = 0
+ignorehitpause = 1
+
+
+;Destroyed
+[Statedef 412]
+type = C
+physics = N
+movetype = A
+velset = 0, 0
+anim = 7300
+
+[State 412, Angle]
+Type = VarSet
+Trigger1 = 1
+fvar(0) = -(Pi * Random/2000.0)
+ignorehitpause = 1
+
+[State 420, Explod]
+type = Explod
+trigger1 = NumExplod(421) < 4
+anim = 7017
+ID = 421
+pos = 0, 0
+postype = p1  ;p2,front,back,left,right
+facing = 1
+vfacing = 1
+bindtime = 1
+vel = 2 * Cos(FVar(0)), 2 * Sin(FVar(0))
+accel = 0,0
+random = 0,0
+removetime = -2
+scale = 1,1
+sprpriority = 2
+ontop = 0
+shadow = 0,0,0
+ownpal = 1
+removeongethit = 1
+ignorehitpause = 1
+
+[State 420, Explod]
+type = DestroySelf
+trigger1 = NumExplod(421) = 4
+ignorehitpause = 1
+
 
 ;---------------------------------------------------------------------------
 ;Crouching Strong
@@ -436,31 +470,9 @@ type = PlaySnd
 trigger1 = AnimElem = 4
 value = S7000,1
 
-[State 420, Explod]
-type = Explod
-trigger1 = AnimElem = 3
-anim = 7030 + Var(22)
-ID = 220
-pos = 20, IfElse(Var(22) = 0, -13, IfElse(Var(22) = 1, -13, -10))
-postype = p1  ;p2,front,back,left,right
-facing = 1
-vfacing = 1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
-scale = 1,1
-sprpriority = 2
-ontop = 0
-shadow = 0,0,0
-ownpal = 1
-removeongethit = 1
-ignorehitpause = 1
-
 [State 420, 2]
 type = HitDef
-trigger1 = !Time && Var(22) = 0
+trigger1 = !Time
 attr = C, NA
 damage    = 53
 animtype  = Hard
@@ -486,72 +498,6 @@ palfx.time = 12
 ground.cornerpush.veloff = 0
 air.cornerpush.veloff = 0
 
-[State 420, 2]
-type = HitDef
-trigger1 = !Time && Var(22) = 1
-attr = C, NA
-damage    = 53
-animtype  = Hard
-hitflag = MAF
-guardflag = L
-pausetime = 20,20
-sparkno = -1
-hitsound   = S7020,4
-fall = 1
-guardsound = 6,0
-ground.type = Low
-ground.slidetime = 6
-ground.hittime  = 12
-ground.velocity = -1,-5
-air.velocity = -2,-5
-down.velocity = -5,0
-down.hittime = 22
-getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 216)), IfElse(Var(21) > 0, 0, 36)
-givepower = 36, 36
-palfx.add = 0, 20, 200
-palfx.color = 0
-palfx.mul = 256, 256, 256
-palfx.time = 12
-palfx.invertall = 1
-ground.cornerpush.veloff = 0
-air.cornerpush.veloff = 0
-
-[State 420, 2]
-type = HitDef
-trigger1 = !Time && Var(22) = 2
-attr = C, NA
-damage    = 53
-animtype  = Hard
-hitflag = MAF
-guardflag = L
-pausetime = 20,20
-sparkno = -1
-hitsound   = S7020,4
-fall = 1
-guardsound = 6,0
-ground.type = Low
-ground.slidetime = 6
-ground.hittime  = 12
-ground.velocity = -3,-3
-air.velocity = -3,-3
-down.velocity = -5,0
-down.hittime = 22
-getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 216)), IfElse(Var(21) > 0, 0, 36)
-givepower = 36, 36
-palfx.color = 0
-palfx.add = 144, 64, 7
-palfx.mul = 256,256,256
-palfx.time = 12
-ground.cornerpush.veloff = 0
-air.cornerpush.veloff = 0
-
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.8
-persistent = 0
-ignorehitpause = 1
-
 [State 220, 3]
 type = ChangeState
 trigger1 = AnimTime = 0
@@ -567,7 +513,7 @@ ctrl = 1
 [Statedef 600]
 type    = A
 movetype= A
-physics = A
+physics = N
 juggle  = 2
 poweradd= 0
 ctrl = 0
@@ -580,12 +526,25 @@ type = PlaySnd
 trigger1 = Time = 1
 value = 7000, 0
 
+[State 610, Boom]
+type = VelAdd
+trigger1 = Anim = 600
+trigger1 = AnimElem = 3
+trigger1 = Vel Y >= -4
+Y = -2
+persistent = 0
+
+[State 610, Boom]
+type = VelAdd
+trigger1 = 1
+Y = 0.5
+
 [State 600, Explod]
 type = Explod
 trigger1 = AnimElem = 2
 anim = 7010
-ID = 600
-pos = -10, -15 
+ID = 200
+pos = 10, -8
 postype = p1  ;p2,front,back,left,right
 facing = 1
 vfacing = 1
@@ -610,8 +569,8 @@ damage    = 20
 guardflag = HA
 priority = 3
 pausetime = 7,8
-sparkno = S7000
-sparkxy = 0, -3
+sparkno = S7005 
+sparkxy = 0, 0
 hitsound   =  S7020,0
 guardsound = 6,0
 ground.type = High
@@ -626,17 +585,16 @@ palfx.add = 200, 200, 200
 palfx.mul = 256, 256, 256
 palfx.time = 8
 
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.95
-persistent = 0
-ignorehitpause = 1
-
 [State 600, 3]
 type = CtrlSet
 trigger1 = Time = 17
 value = 1
+
+[State 610, Landing]
+type = ChangeState
+trigger1 = Vel Y > 0
+trigger1 = pos y > -vel y
+value = 611
 
 ;---------------------------------------------------------------------------
 ;Jump Mid
@@ -654,7 +612,21 @@ facep2 = 1
 [State 610, Boom]
 type = VelSet
 trigger1 = !Time
-Y = Vel Y * 0.5
+Y = 0.4
+X = Vel X * 0.5
+
+[State 610, Boom]
+type = VelAdd
+trigger1 = Anim = 610
+trigger1 = AnimElem = 2
+Y = -4
+
+[State 610, Boom]
+type = VelAdd
+trigger1 = Anim = 610 && AnimElemNo(0) > 1
+trigger2 = Anim != 610
+Y = 0.4
+
 
 [State 610, 1]
 type = PlaySnd
@@ -664,13 +636,13 @@ value = S7000, 1
 
 [State 210, Explod]
 type = Explod
+trigger1 = AnimElem = 2
 trigger1 = Anim = 610
-trigger1 = AnimElem = 3
 anim = 7011
 ID = 210
-pos = 0, -15
+pos = 7, -19
 postype = p1  ;p2,front,back,left,right
-facing = -1
+facing = 1
 vfacing = 1
 bindtime = -1
 vel = 0,0
@@ -678,24 +650,12 @@ accel = 0,0
 random = 0,0
 removetime = -2
 scale = 1,1
-sprpriority = -1
+sprpriority = 2
 ontop = 0
 shadow = 0,0,0
 ownpal = 1
 removeongethit = 1
 ignorehitpause = 1
-
-[State 610, Boom]
-type = VelSet
-trigger1 = MoveContact
-Y = -2
-persistent = 0
-ignorehitpause = 1
-
-[State 610, Boom]
-type = VelAdd
-trigger1 = 1
-Y = 0.4
 
 [State 610, 2]
 type = HitDef
@@ -705,8 +665,8 @@ damage = 45
 guardflag = HA
 priority = 3
 pausetime = 8,8
-sparkno = S7007
-sparkxy = -10, -25
+sparkno = S7006
+sparkxy = -5, -25
 hitsound   = S7020,3
 guardsound = 6,0
 ground.type = High
@@ -719,13 +679,6 @@ givepower = 36, 36
 palfx.add = 200, 200, 200
 palfx.mul = 256, 256, 256
 palfx.time = 8
-
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.85
-persistent = 0
-ignorehitpause = 1
 
 [State 610, Fall]
 type = CtrlSet
@@ -740,7 +693,6 @@ trigger1 = Anim = 610
 trigger1 = !AnimTime
 trigger1 = Vel X > 0
 value = 42
-elem = 3
 
 [State 610, Fall]
 type = ChangeAnim
@@ -762,7 +714,7 @@ type    = S
 movetype= I
 physics = S
 ctrl = 0
-anim = 131
+anim = 47
 sprpriority = 1
 velset = 0,0
 
@@ -791,81 +743,43 @@ anim = 620
 sprpriority = 1
 facep2 = 1
 
+
 [State 620, VelAdd]
 type = VelAdd
-trigger1 = AnimElemNo(0) >= 2
+trigger1 = AnimElemNo(0) >= 5
 trigger2 = Anim != 620
-Y = 0.49
+Y = 0.3
 
-[State 220, Explod]
-type = Explod
-trigger1 = AnimElem = 3
-anim = 7012
-ID = 220
-pos = 4, -30
+[State 620, VelAdd]
+type = VelAdd
+trigger1 = AnimElem = 5
+Y = -3
+persistent = 0
+
+[State 620, VelAdd]
+type = VelSet
+trigger1 = AnimElem = 5
+X = -1
+persistent = 0
+
+[State 420, Explod]
+type = Helper
+trigger1 = AnimElem = 2
+stateno = 622
+ID = 620
+pos = 15,-20
 postype = p1  ;p2,front,back,left,right
 facing = 1
-vfacing = -1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
 scale = 1,1
 sprpriority = 2
-ontop = 0
-shadow = 0,0,0
 ownpal = 1
-removeongethit = 1
 ignorehitpause = 1
 
-[State 620, 3]
-type = HitDef
+[State 620, VelAdd]
+type = VelSet
 trigger1 = !Time
-attr = A, NA
-damage = 72
-guardflag = HA
-priority = 4
-pausetime = 12,12
-sparkno = S7003
-sparkxy = 0,-10
-hitsound   = S7020,2
-guardsound = 6,0
-animtype = Med
-ground.type = High
-ground.slidetime = 12
-ground.hittime  = 14
-ground.velocity = -2, 7
-air.velocity = -2, 7
-getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 36, 72)), IfElse(Var(21) > 0, 0, 18)
-givepower = 36, 36
-palfx.add = 200, 200, 200
-palfx.mul = 256, 256, 256
-palfx.time = 8
-fall = 1
-fall.recover = 0
-
-[State 200, Dampen]
-Type=Varset
-Trigger1 = MoveHit
-fvar(39) = fvar(39)*0.78
-persistent = 0
-ignorehitpause = 1
-
-[State 610, Fall]
-type = ChangeAnim
-trigger1 = Anim = 620
-trigger1 = !AnimTime
-trigger1 = Vel X > 0
-value = 42
-elem = 3
-
-[State 610, Fall]
-type = ChangeAnim
-trigger1 = Anim = 620
-trigger1 = !AnimTime
-trigger1 = Vel X <= 0
-value = 41
+X = 0.5 * Vel X
+Y = -0.2
 
 [State 620, Landing]
 type = ChangeState
@@ -880,7 +794,7 @@ type    = S
 movetype= I
 physics = S
 ctrl = 0
-anim = 131
+anim = 47
 sprpriority = 1
 velset = 0,0
 
@@ -894,6 +808,115 @@ type = ChangeState
 trigger1 = Time > 15
 value = 0
 ctrl = 1
+
+;Ice Attack
+[Statedef 622]
+type = A
+physics = N
+movetype = A
+velset = 0, 0
+sprpriority = 2
+anim = 7015
+
+[State 611, Pos]
+type = PosSet
+trigger1 = Parent, AnimElemNo(0) <= 4
+X = Parent, Pos X + 15 * Parent, Facing
+X = Parent, Pos Y - 20
+ignorehitpause = 1
+
+[State 410, 2]
+type = HitDef
+trigger1 = Parent, AnimElem = 4
+attr = C, NA
+damage    = 34
+animtype  = Medium
+hitflag = MAF
+guardflag = L
+pausetime = 10,10
+sparkno = S7006
+sparkxy = -9, -25
+hitsound   = S7020,2
+guardsound = 6,0
+ground.type = Low
+ground.slidetime = 8
+ground.hittime  = 17
+ground.velocity = -2, -4
+air.velocity = -3,-4
+getpower = IfElse(Parent, Var(21) > 0, 0, ifelse(p2movetype = H, 72, 144)), IfElse(Parent, Var(21) > 0, 0, 36)
+givepower = 36, 36
+palfx.invertall = 0
+palfx.color = 0
+palfx.add = 80, 80, 180
+palfx.time = 18
+ground.cornerpush.veloff = 0
+air.cornerpush.veloff = 0
+
+[State 410,Got Hit]
+type = NotHitBy
+trigger1 = 1
+value = , AT
+ignorehitpause = 1
+
+[State 410,Got Hit]
+type = HitOverride
+trigger1 = 1
+attr = SCA, AA, AP
+stateno = 623
+ignorehitpause = 1
+
+[State 410,End]
+type = ChangeState
+trigger1 = !AnimTime
+trigger2 = MoveContact
+trigger3 = Parent, StateNo != 620
+trigger4 = Parent, AnimElemNo(0) > 5
+value = 623
+ctrl = 0
+ignorehitpause = 1
+
+
+;Destroyed
+[Statedef 623]
+type = A
+physics = N
+movetype = A
+velset = 0, 0
+anim = 7300
+
+[State 412, Angle]
+Type = VarSet
+Trigger1 = 1
+fvar(0) = (Pi * Random/2000.0)
+ignorehitpause = 1
+
+[State 420, Explod]
+type = Explod
+trigger1 = NumExplod(421) < 4
+anim = 7017
+ID = 421
+pos = 0, 0
+postype = p1  ;p2,front,back,left,right
+facing = 1
+vfacing = 1
+bindtime = 1
+vel = 2 * Cos(FVar(0)), 2 * Sin(FVar(0))
+accel = 0,0
+random = 0,0
+removetime = -2
+scale = 1,1
+sprpriority = 2
+ontop = 0
+shadow = 0,0,0
+ownpal = 1
+removeongethit = 1
+ignorehitpause = 1
+
+[State 420, Explod]
+type = DestroySelf
+trigger1 = NumExplod(421) = 4
+ignorehitpause = 1
+
 
 ;---------------------------------------------------------------------------
 ; Magic Bind
