@@ -49,7 +49,7 @@ guardflag = M                    ;Flags on how move is to be guarded against
 hitflag = MAF                    ;Flags of conditions that move can hit
 priority = 4, Hit                ;Attack priority: 0 (least) to 7 (most), 4 default
 ;Hit/Miss/Dodge type (Def: Hit)
-pausetime = 8, 8                 ;Time attacker pauses, time opponent shakes
+pausetime = 8, 12                 ;Time attacker pauses, time opponent shakes
 sparkno = S7005                      ;Spark anim no (Def: set above)
 sparkxy = 0, 0               ;X-offset for the "hit spark" rel. to p2,
 ;Y-offset for the spark rel. to p1
@@ -140,16 +140,16 @@ hitsound   = S7040,1
 guardsound = 6,0
 ground.type = High
 ground.slidetime = 0
-ground.hittime  = 20
+ground.hittime  = 25
 ground.velocity = -.5, -4
 air.velocity = -.5,-4
-ground.cornerpush.veloff = 0;
-air.cornerpush.veloff = 0;
 getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 36, 72)), IfElse(Var(21) > 0, 0, 18)
 givepower = 18, 18
 palfx.add = 200, 200, 200
 palfx.mul = 256, 256, 256
 palfx.time = 8
+ground.cornerpush.veloff = -3;
+air.cornerpush.veloff = -3;
 
 [State 210, 5]
 type = ChangeState
@@ -176,53 +176,32 @@ type = PlaySnd
 trigger1 = AnimElem = 3
 value = S7000, 1
 
-[State 220, Explod]
-type = Explod
-trigger1 = AnimElem = 3
-anim = -1;7012
-ID = 220
-pos = 7, -5
-postype = p1  ;p2,front,back,left,right
-facing = 1
-vfacing = 1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
-scale = 1,1
-sprpriority = -1
-ontop = 0
-shadow = 0,0,0
-ownpal = 1
-removeongethit = 1
-ignorehitpause = 1
-
 [State 220, 2]
 type = Projectile
 trigger1 = Animelem = 3
 attr = S, NP
 offset = 16, -15
 projID = 220
-projanim = 7006
-projhitanim = 7002
+projanim = 7018
+projhitanim = 7019
+projremanim = -1
 projremovetime = 18
 velocity = 4,0
 animtype  = Hard
 damage    = 42
 guardflag = MAF
-pausetime = 12,12
+pausetime = 18,18
 sparkno = -1
 hitsound   = S7020,3
 guardsound = 6,0
 ground.type = High
 ground.slidetime = 14
-ground.hittime  = 17
-ground.velocity = -4
-air.velocity = -4,-2
+ground.hittime  = 15
+ground.velocity = -2
+air.velocity = -2,-2
 getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 216)), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
-palfx.add = 128, 100, 7
+palfx.add = 7, 100, 128
 palfx.mul = 256,256,256
 palfx.time = 8
 ground.cornerpush.veloff = -2;
@@ -366,16 +345,16 @@ damage    = 34
 animtype  = Medium
 hitflag = MAF
 guardflag = L
-pausetime = 10,10
+pausetime = 10,23
 sparkno = S7006
 sparkxy = -9, -25
 hitsound   = S7020,2
 guardsound = 6,0
 ground.type = Low
 ground.slidetime = 8
-ground.hittime  = 17
-ground.velocity = -2, -4
-air.velocity = -3,-4
+ground.hittime  = 10
+ground.velocity = -1, -4
+air.velocity = -1,-4
 getpower = IfElse(Parent, Var(21) > 0, 0, ifelse(p2movetype = H, 72, 144)), IfElse(Parent, Var(21) > 0, 0, 36)
 givepower = 36, 36
 palfx.invertall = 0
@@ -470,33 +449,37 @@ type = PlaySnd
 trigger1 = AnimElem = 4
 value = S7000,1
 
-[State 420, 2]
-type = HitDef
-trigger1 = !Time
-attr = C, NA
-damage    = 53
+[State 220, 2]
+type = Projectile
+trigger1 = Animelem = 3
+attr = C, NP
+offset = -3, -25
+projID = 220
+projanim = 7018
+projhitanim = 7019
+projremanim = -1
+projremovetime = 18
+velocity = 2,-7
+accel = 0, 0.46
 animtype  = Hard
-hitflag = MAF
-guardflag = L
-pausetime = 20,20
+damage    = 42
+guardflag = MAF
+pausetime = 18,18
 sparkno = -1
-hitsound   = S7020,4
-fall = 1
+hitsound   = S7020,3
 guardsound = 6,0
-ground.type = Low
-ground.slidetime = 6
-ground.hittime  = 12
-ground.velocity = -4,-1
-air.velocity = -4,-1
-down.velocity = -5,0
-down.hittime = 22
+ground.type = High
+ground.slidetime = 14
+ground.hittime  = 15
+ground.velocity = -4
+air.velocity = -4,-2
 getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 216)), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
-palfx.add = 200, 200, 200
-palfx.mul = 256, 256, 256
-palfx.time = 12
-ground.cornerpush.veloff = 0
-air.cornerpush.veloff = 0
+palfx.add = 7, 100, 128
+palfx.mul = 256,256,256
+palfx.time = 8
+ground.cornerpush.veloff = -2;
+air.cornerpush.veloff = -2;
 
 [State 220, 3]
 type = ChangeState
@@ -682,8 +665,7 @@ palfx.time = 8
 
 [State 610, Fall]
 type = CtrlSet
-trigger1 = Anim = 610
-trigger1 = !AnimTime
+trigger1 = Time > 80
 value = 1
 persistent = 0
 

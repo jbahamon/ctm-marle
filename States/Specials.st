@@ -2,7 +2,7 @@
 ; Special Moves
 ;===========================================================================
 
-;Elemental Magic
+;Ice
 [Statedef 1000]
 type    = S
 movetype= A
@@ -27,63 +27,16 @@ ignorehitpause = 1
 
 [State 1000, Pawnch]
 type = Helper
-trigger1 = AnimElem = 5
-trigger1 = Var(22) = 0
-trigger1 = !Var(21)
-name = "Lightning"
+trigger1 = !Time
+name = "Ice"
 ID = 1000
 stateno = 1001
-pos = 50 + 50 * Var(0), 0
+pos = 10, 0
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
 ownpal = 1
 persistent = 0
-
-[State 1000, Pawnch]
-type = Helper
-trigger1 = AnimElem = 5
-trigger1 = Var(22) = 1
-trigger1 = !Var(21)
-name = "Water Bubble"
-ID = 1000
-stateno = 1002
-pos = 20, -20
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-persistent = 0
-
-[State 1000, Pawnch]
-type = Helper
-trigger1 = AnimElem = 5
-trigger1 = Var(22) = 2
-trigger1 = !Var(21)
-name = "Fire"
-ID = 1000
-stateno = 1003
-pos = 15, -15
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-persistent = 0
-
-[State 1000, Pawnch]
-type = Helper
-trigger1 = AnimElem = 5
-trigger1 = Var(21)
-name = "Dark Bomb"
-ID = 1000
-stateno = 1007
-pos = 50 + 60 * Var(0), 0
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-persistent = 0
-
 
 [State 1040, End]
 type = ChangeState
@@ -92,211 +45,14 @@ trigger2 = NumHelper(1000) && Var(21)
 value = 0
 ctrl = 1
 
-;Lightning
+; Ice Flame
 [Statedef 1001]
-type = A
-physics = N
-movetype = A
-anim = 7100
-ctrl = 0
-velset = 0,0
-sprpriority = 3
-
-[State 1002, Strength]
-type = VarSet
-trigger1 = !time
-var(0) = (root, var(0))
-
-[State 1001, NoShadow]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
-
-[State 200, Explod]
-type = Explod
-trigger1 = AnimElem = 5
-anim = 7105
-ID = 200
-postype = p1  ;p2,front,back,left,right
-facing = 1
-vfacing = 1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
-scale = 1.2, 0.7
-sprpriority = 0
-ontop = 0
-shadow = 0,0,0
-ownpal = 1
-removeongethit = 1
-ignorehitpause = 1
-
-[State 1001, hitdef]
-type = HitDef
-triggerall = !MoveContact
-triggerall = !MoveReversed
-trigger1 = Time > 0
-priority = 6, Hit
-attr = A,SP
-damage = Floor(Parent, FVar(39)*60), 4
-animtype = Hard
-hitflag = MAF
-guardflag = MA
-pausetime = 4,4
-sparkno = -1
-ground.type = High
-ground.slidetime = 20
-ground.hittime = 20
-ground.velocity = -0.4,0
-air.velocity  = -0.4, 4
-air.fall = 1
-p2facing = 1
-palfx.invertall = 1
-palfx.color = 0
-palfx.add = 120, 120, 20
-palfx.time = 12
-guard.dist = 100
-envshake.time = 8
-envshake.freq = 120
-envshake.ampl = 2
-getpower = IfElse(Parent, Var(21) > 0, 0, 20)
-
-[State 1001, Dampen]
-Type = ParentVarset
-Trigger1 = MoveHit
-fvar(39) = parent, Fvar(39)*0.86
-persistent = 0
-ignorehitpause = 1
-
-[State 1001, HB]
-type = NotHitBy
-trigger1 = 1
-time = -1
-value = , AT
-ignorehitpause = 1
-
-[State 1000, burst]
-type = Trans
-trigger1 = AnimElemTime(6) > 0
-trans = addalpha
-alpha = 256 - 8 * AnimElemTime(6), 256
-ignorehitpause = 1
-
-[State 1001, burst]
-type = DestroySelf
-trigger1 = AnimElemTime(6) > 32
-trigger2 = MoveReversed
-ignorehitpause = 1
-
-;Water Bubble
-[Statedef 1002]
-type = A
-physics = N
-movetype = A
-anim = 7101
-ctrl = 0
-velset = 0,0
-sprpriority = 4
-
-[State 1002, Strength]
-type = VarSet
-trigger1 = !time
-var(0) = (root, var(0))
-
-[State 1002, NoShadow]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
-
-[State 1002, Vertical Speed]
-type = VelSet
-trigger1 = Time < 100
-X = 0.3 * (2 - Var(0)) + 0.5
-Y = IfElse(Var(0) = 2, -.84, IfElse(Var(0) = 1, -.45, -.24)) - Sin(Time * 6)
-
-[State 1002, Vertical Speed]
-type = VelAdd
-trigger1 = Time >= 100 
-X = - Vel X * 0.9
-
-[State 1002, Vertical Speed]
-type = VelSet
-trigger1 = Time >= 80 
-Y = IfElse(Var(0) = 2, -.84, IfElse(Var(0) = 1, -.45, -.24)) * 30 /(30.0 + Time - 80) - Sin(Time * 6)
-
-
-[State 1010, hitdef]
-type = HitDef
-triggerall = !MoveContact
-triggerall = !MoveReversed
-trigger1 = Time > 0
-priority = 6, Hit
-attr = A,SP
-damage = Floor(Parent, FVar(39)*60), 4
-animtype = Hard
-hitflag = MAF
-guardflag = MA
-pausetime = 4,4
-sparkno = -1
-ground.type = High
-ground.slidetime = 20
-ground.hittime = 20
-ground.velocity = -0.4, -4.2
-air.velocity  = -0.4, -4.2
-air.fall = 1
-fall.recover = 1
-p2facing = 1
-palfx.invertall = 1
-palfx.color = 0
-palfx.add = 0, 20, 120
-palfx.time = 12
-guard.dist = 100
-envshake.time = 8
-envshake.freq = 120
-envshake.ampl = 2
-getpower = IfElse(Parent, Var(21) > 0, 0, 20)
-
-[State 200, Dampen]
-Type = ParentVarset
-Trigger1 = MoveHit
-fvar(39) = parent, Fvar(39)*0.8
-persistent = 0
-ignorehitpause = 1
-
-[State 1021, HitOverride]
-type = HitOverride
-trigger1 = 1
-time = -1
-attr = SCA, AA, AP
-stateno = 1005
-ignorehitpause = 1
-
-[State 1021, HB]
-type = NotHitBy
-trigger1 = 1
-time = -1
-value = , AT
-ignorehitpause = 1
-
-[State 1010, burst]
-type = ChangeState
-trigger1 = MoveContact
-trigger2 = Time > 200
-value = 1005
-ignorehitpause = 1
-
-; Fire
-[Statedef 1003]
-type    = A
+type    = S
 movetype= A
 physics = N
 juggle  = 3
 ctrl = 0
-anim = 7103
+anim = 7041
 sprpriority = 2
 
 [State 1002, NoShadow]
@@ -315,7 +71,7 @@ type = HitOverride
 trigger1 = 1
 time = -1
 attr = SCA, AA, AP
-stateno = 1004
+stateno = 1002
 ignorehitpause = 1
 
 [State 1021, HB]
@@ -327,15 +83,9 @@ ignorehitpause = 1
 
 [State 1021, Vel]
 type = VelSet
-trigger1 = AnimElem = 4
-x =  IfElse(var(0) = 2, 4.2, IfElse(var(0) = 1, 2.7, 2)) * Cos(IfElse(var(0) = 2, 0.5 ,IfElse(var(0) = 1, 0.78, 1.4)))
-y = -IfElse(var(0) = 2, 3.5, IfElse(var(0) = 1, 2.7, 4)) * Sin(IfElse(var(0) = 2, 0.5 ,IfElse(var(0) = 1, 0.78, 1.4)))
+trigger1 = !Time
+X = 1
 persistent = 0
-
-[State 1021, Gravity]
-type = VelAdd
-trigger1 = AnimElemNo(0) >= 5
-y = 0.26
 
 [State 1010, hitdef]
 type = HitDef
@@ -370,12 +120,11 @@ getpower = IfElse(Parent, Var(21) > 0, 0, 20)
 
 [State 1022, Explod]
 type = Explod
-trigger1 = GameTime % 4 = 0
-trigger1 = AnimElemNo(0) >= 5
+trigger1 = GameTime % 9 = 0
 trigger1 = !MoveContact
-anim = 7104
-ID = 1020
-pos = 0, 0
+anim = 7040
+ID = 1001
+pos = 6 + Random % 3, 0
 postype = p1 ;p2,front,back,left,right
 facing = 1
 vfacing = 1
@@ -404,190 +153,17 @@ trigger3 = MoveReversed
 ignorehitpause = 1
 
 ;Fire Fading
-[Statedef 1004]
-type = A
+[Statedef 1002]
+type = S
 physics = N
 movetype = I
 velset = 0,0
 ctrl = 0
 sprpriority = 4
-
-[State 1015, snd]
-type = NotHitBy
-trigger1 = 1
-value = SCA
-time = -1
-ignorehitpause = 1
-
-[State 1015, assert]
-type = Trans
-trigger1 = 1
-trans = addalpha
-alpha = 256 - Time * 16, Time * 16
-ignorehitpause = 1
-
-[State 1015, assert]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
 
 [State 1015, assert]
 type = DestroySelf
-trigger1 = Time >= 16
-ignorehitpause = 1
-
-;Bubble Bursting
-[Statedef 1005]
-type = A
-physics = N
-movetype = I
-anim = 7102
-velset = 0,0
-ctrl = 0
-sprpriority = 4
-
-[State 1015, snd]
-type = PlaySnd
 trigger1 = !Time
-value = S7010,4
-channel = 1
-
-[State 1015, assert]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
-
-[State 1015, dieplz]
-type = DestroySelf
-trigger1 = FrontEdgeDist < -50
-trigger2 = BackEdgeDist < 0
-trigger3 = !AnimTime
-
-;Dark Bomb
-[Statedef 1007]
-type = S
-physics = N
-movetype = A
-anim = 7106
-ctrl = 0
-velset = 0,0
-sprpriority = 4
-
-[State 1002, Strength]
-type = VarSet
-trigger1 = !time
-var(0) = (root, var(0))
-
-[State 1002, Strength]
-type = Trans
-trigger1 = 1
-trans = addalpha
-alpha = 256, 64
-ignorehitpause = 1
-
-[State 1002, Strength]
-type = AngleDraw
-trigger1 = 1
-scale = 0.5, 0.5
-ignorehitpause = 1
-
-[State 1002, NoShadow]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
-
-[State 1010, hitdef]
-type = HitDef
-triggerall = !MoveContact
-triggerall = !MoveReversed
-trigger1 = Time > 0
-priority = 6, Hit
-attr = A,SP
-damage = Floor(Parent, FVar(39)*120), 4
-animtype = Hard
-hitflag = MAF
-guardflag = MA
-pausetime = 4,30
-sparkno = -1
-ground.type = High
-ground.slidetime = 20
-ground.hittime = 20
-ground.velocity = -3, 0
-air.velocity  = -3, 0
-air.fall = 1
-fall.recover = 1
-p2facing = 1
-palfx.invertall = 1
-palfx.color = 0
-palfx.add = -20, -20, -20
-palfx.time = 50
-guard.dist = 100
-envshake.time = 8
-envshake.freq = 120
-envshake.ampl = 2
-getpower = IfElse(Parent, Var(21) > 0, 0, 20)
-
-[State 200, Dampen]
-Type = ParentVarset
-trigger1 = MoveHit
-fvar(39) = parent, Fvar(39)*0.8
-persistent = 0
-ignorehitpause = 1
-
-[State 1021, HitOverride]
-type = HitOverride
-trigger1 = 1
-time = -1
-attr = SCA, AA, AP
-stateno = 1008
-ignorehitpause = 1
-
-[State 1021, HB]
-type = NotHitBy
-trigger1 = 1
-time = -1
-value = , AT
-ignorehitpause = 1
-
-[State 1010, burst]
-type = DestroySelf
-trigger1 = !AnimTime
-ignorehitpause = 1
-
-;Dark Bomb GetHit
-[Statedef 1008]
-type = S
-physics = N
-movetype = H
-velset = 0,0
-ctrl = 0
-sprpriority = 4
-
-[State 1002, Strength]
-type = AngleDraw
-trigger1 = 1
-scale = 0.5, 0.5
-ignorehitpause = 1
-
-[State 1002, Strength]
-type = Trans
-trigger1 = 1
-trans = addalpha
-alpha = 256 - Time * 16, 64 - Time * 4
-ignorehitpause = 1
-
-[State 1015, assert]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
-
-[State 1015, dieplz]
-type = DestroySelf
-trigger1 = !AnimTime || Time >= 16
 ignorehitpause = 1
 
 ;---------------------------------------------------------------------------
