@@ -651,15 +651,20 @@ value = 1020
 triggerall =  command = "dfab" || command = "dfbc" || command = "dbab" || command = "dbbc"
 trigger1 = statetype != A
 trigger1 = ctrl
+;--------------------------------------------------------------------------
+[State -1, Siren]
+type = ChangeState
+value = 1030
+triggerall = Command = "dba" || Command = "dbb" || Command = "dbc" 
+trigger1 = statetype != A
+trigger1 = ctrl
 ;---------------------------------------------------------------------------
-[State -1, Dark Mist]
+[State -1, Aura]
 type = ChangeState
 value = 1010
-triggerall = command = "dfa" || command = "dfb" || command = "dfc"
+triggerall = command = "qcba" || command = "qcbb" || command = "qcbc"
 triggerall = statetype != A 
 trigger1 = ctrl
-trigger2 = (stateno = [200, 299]) && movecontact
-trigger3 = (stateno = [400, 499]) && movecontact
 ;---------------------------------------------------------------------------
 [State -1, Elemental Magic]
 type = ChangeState
@@ -668,19 +673,13 @@ triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
 triggerall = roundstate = 2 && statetype != A && !numhelper(1000)
 trigger1 = ctrl
 trigger2 = (stateno = [200, 299]) && MoveContact
-;--------------------------------------------------------------------------
-[State -1, Black Hole]
-type = ChangeState
-value = 1030
-triggerall = Command = "dba" || Command = "dbb" || Command = "dbc" 
-trigger1 = statetype != A
-trigger1 = ctrl
+
 
 ;===========================================================================
 ; Throws, Rolls, Etc
 ;===========================================================================
 
-[State -1, Napalm]
+[State -1, Freeze]
 type = ChangeState
 trigger1 = (command = "recovery" || command = "2p") && (command = "holdfwd" || command = "holdback")
 trigger1 = roundstate = 2 && ctrl && statetype = S && stateno != 100
