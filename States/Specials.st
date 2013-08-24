@@ -51,7 +51,7 @@ movetype= A
 physics = N
 juggle  = 3
 ctrl = 0
-anim = 7041
+anim = 7101
 sprpriority = 2
 
 [State 1002, NoShadow]
@@ -104,7 +104,7 @@ ground.slidetime = 20
 ground.hittime = 10
 ground.velocity = -1, -1
 air.velocity  = -1, -1
-air.fall = 1
+air.fall = 0
 p2facing = 1
 palfx.invertall = 0
 palfx.color = 0
@@ -121,7 +121,7 @@ type = Explod
 trigger1 = GameTime % (9 - Var(0)) = 0
 trigger1 = !MoveContact
 trigger1 = Time < 90
-anim = 7040
+anim = 7100
 ID = 1001
 pos = 7 + Random % 3, 0
 postype = p1 ;p2,front,back,left,right
@@ -156,7 +156,7 @@ physics = N
 movetype = I
 velset = 0,0
 ctrl = 0
-anim = 7042
+anim = 7102
 sprpriority = 4
 
 
@@ -309,123 +309,134 @@ ctrl = 1
 
 
 ;---------------------------------------------------------------------------
-; Shadow Walk
+;Ice Riser
 [Statedef 1020]
 type    = S
-movetype= I
+movetype= A
 physics = S
 juggle  = 3
-poweradd= 72
 ctrl = 0
 anim = 1020
-sprpriority = -1
+sprpriority = 1
+poweradd = IfElse(Var(21) > 0, 0, 72)
 facep2 = 1
-velset = 0,0
-
 
 [State 1010, Strength]
 type = VarSet
 trigger1 = !Time
-var(0) = Command = "dfbc" || Command = "dbbc"
+var(0) = IfElse(command = "dfc", 2, IfElse(command = "dfb", 1, 0))
 
-[State 1010, Direction]
-type = VarSet
-trigger1 = !Time
-var(1) = IfElse(Command = "dfab" || Command = "dfbc", 1, -1)
-
-[State 1020, Strength]
-type = NotHitBy
-trigger1 = AnimElemNo(0) >= 2
-value = , AA, AP
-
-[State 1020, Strength]
-type = NotHitBy
-trigger1 = AnimElemNo(0) >= 2
-value = , AA, AP
-
-[State 1020, Strength]
-type = PlayerPush
-trigger1 = AnimElemNo(0) >= 2
-value = 0
-
-[State 1020, Strength]
-type = VelSet
-trigger1 = AnimElemNo(0) >= 2
-trigger1 = Anim = 1020 || Anim = 1022
-X = IfElse(Var(1) > 0, 1.4 * Const(velocity.run.fwd.x), 1.4 * Const(velocity.run.back.x) )
-
-[State 1020, Strength]
-type = ChangeAnim
-trigger1 = AnimElemNo(0) = 2
-trigger1 = Var(1) < 0
-value = 1022
-
-[State 1020, Afterimage]
-type = PalFX
-trigger1 = Time = [0, 16]
-add = -4 * Time, -4 * Time, -4 * Time
-color = 16 * (16 - Time )
-time = 1
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = AnimElem = 3
+value = S7000,1
 ignorehitpause = 1
 
-[State 1020, Afterimage]
-type = Trans
-trigger1 = Time = [0, 16]
-trans = addalpha
-alpha = 256 - 8 * Time, 4 * Time
-ignorehitpause = 1
+[State 1000, Pawnch]
+type = Helper
+trigger1 = AnimElem = 6
+name = "Ice Riser"
+ID = 1020
+stateno = 1021
+pos = 20 + 30 * var(0), 0
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+persistent = 0
 
-[State 1020, Afterimage]
-type = PalFX
-trigger1 = Time > 16
-add = -64, -64, -64
-color = 0
-time = 1
-ignorehitpause = 1
-
-[State 1020, Afterimage]
-type = Trans
-trigger1 = Time > 16
-trans = addalpha
-alpha = 128, 64
-ignorehitpause = 1
-
-[State 1020, End]
+[State 1040, End]
 type = ChangeState
-trigger1 = Time > (15 * Var(0) + 25)
-value = 1021
-
-;Shadow Walk End
-[Statedef 1021]
-type    = S
-movetype= I
-physics = S
-juggle  = 3
-ctrl = 0
-anim = 1021
-sprpriority = 1
-facep2 = 1
-
-[State 1020, Afterimage]
-type = Trans
-trigger1 = Time = [0, 16]
-trans = addalpha
-alpha = 128 + 8 * Time, 64 - 4 * Time
-ignorehitpause = 1
-
-[State 1020, Afterimage]
-type = PalFX
-trigger1 = 1
-add = -4 * (16 - Time), -4 * (16 - Time),-4 * (16 - Time)
-color = 16 * Time
-time = 1
-ignorehitpause = 1
-
-[State 1020, End]
-type = ChangeState
-trigger1 = !AnimTime
+trigger1 = AnimElemNo(0) > 6 && !NumHelper(1020)
 value = 0
 ctrl = 1
+
+; Ice Spike
+[Statedef 1021]
+type    = S
+movetype= A
+physics = N
+juggle  = 3
+ctrl = 0
+anim = 7120
+sprpriority = 2
+
+[State 1021, Strength]
+type = VarSet
+trigger1 = !Time
+var(0) = parent, var(0)
+
+[State 1021, HitOverride]
+type = HitOverride
+trigger1 = 1
+time = -1
+attr = SCA, AA, AP
+stateno = 1002
+ignorehitpause = 1
+
+[State 1021, HB]
+type = NotHitBy
+trigger1 = 1
+time = -1
+value = , AT
+ignorehitpause = 1
+
+[State 1010, hitdef]
+type = HitDef
+triggerall = !MoveContact
+triggerall = !MoveReversed
+trigger1 = Time > 0
+priority = 6, Hit
+attr = A,SP
+damage = 60, 4
+animtype = Hard
+hitflag = MAF
+guardflag = MA
+pausetime = 0, 26
+sparkno = -1
+ground.type = High
+ground.slidetime = 20
+ground.hittime = 10
+ground.velocity = 0, -3
+air.velocity  = 0, -3
+fall = 1
+air.fall = 1
+p2facing = 1
+palfx.invertall = 0
+palfx.color = 0
+palfx.add = 80, 80, 180
+palfx.time = 26
+guard.dist = 100
+envshake.time = 8
+envshake.freq = 120
+envshake.ampl = 2
+getpower = IfElse(Parent, Var(21) > 0, 0, 20)
+
+
+[State 1021, ChangeState]
+type = AngleDraw
+trigger1 = 1
+scale = 0.5, 0.5
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = AnimElemNo(0) < 9
+trans = add
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = AnimElemNo(0) = 9
+trans = addalpha
+alpha = 256 - AnimElemTime(9) * 8, 256
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = DestroySelf
+trigger1 = !AnimTime
+ignorehitpause = 1
+
 
 ;---------------------------------------------------------------------------
 ; Siren

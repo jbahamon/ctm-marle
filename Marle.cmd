@@ -645,16 +645,18 @@ trigger3 = ( StateNo = [400,499] ) && MoveHit
 ;===========================================================================
 ; Special Moves
 ;===========================================================================
-[State -1, Shadow Walk]
+[State -1, Ice Riser]
 type = ChangeState
 value = 1020
-triggerall =  command = "dfab" || command = "dfbc" || command = "dbab" || command = "dbbc"
+triggerall = !NumHelper(1020)
+triggerall =  command = "dfa" || command = "dfb" || command = "dfc" 
 trigger1 = statetype != A
 trigger1 = ctrl
 ;--------------------------------------------------------------------------
 [State -1, Siren]
 type = ChangeState
 value = 1030
+triggerall = !NumHelper(1030)
 triggerall = Command = "dba" || Command = "dbb" || Command = "dbc" 
 trigger1 = statetype != A
 trigger1 = ctrl
@@ -670,7 +672,7 @@ trigger1 = ctrl
 type = ChangeState
 value = 1000
 triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
-triggerall = roundstate = 2 && statetype != A && !numhelper(1000)
+triggerall = roundstate = 2 && statetype != A && !NumHelper(1000)
 trigger1 = ctrl
 trigger2 = (stateno = [200, 299]) && MoveContact
 

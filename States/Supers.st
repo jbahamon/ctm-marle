@@ -393,7 +393,7 @@ trigger1 = Time >= 52
 
 
 ;---------------------------------------------------------------------------
-;Dark Matter
+; Ice II
 [Statedef 2010]
 type    = S
 movetype= A
@@ -439,7 +439,7 @@ trigger1 = Time > 1 && !NumHelper(7000)
 value = 2011
 ctrl = 0
 
-;Dark Matter Summoning
+;Ice II Summoning
 [Statedef 2011]
 type    = S
 movetype= A
@@ -449,13 +449,34 @@ anim = 2011
 sprpriority = 2
 facep2 = 1
 
+[State 2011, Var]
+type = VarSet
+trigger1 = !Time
+V = 0
+value = 0
+
 [State 2011, Dark Matter]
 type = Helper
 trigger1 = !Time
-name = "Dark Matter"
+name = "Ice 2"
 ID = 2010
 stateno = 2012
-pos = -5, -15
+pos = -5, -120
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+persistent = 0
+
+[State 2011, Dark Matter]
+type = Helper
+trigger1 = Time > 0
+trigger1 = !NumHelper(2010)
+trigger1 = Var(0) := 1
+name = "Ice 2"
+ID = 2010
+stateno = 2012
+pos = -5, -120
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
@@ -464,68 +485,51 @@ persistent = 0
 
 [State 2011, End]
 type = ChangeState
-trigger1 = !AnimTime
+trigger1 = Time > 130
+trigger2 = Var(0)
+trigger2 = !NumHelper(2010) || Helper(2010), StateNo = 2014
 value = 0
 ctrl = 1
 
-;Dark Matter (invisible)
+;Ice Block
 [Statedef 2012]
-type    = A
-movetype= I
-physics = N
-ctrl = 0
-anim = 7300
-sprpriority = 3
-velset = 0,0
-
-[State 2012, Boom]
-type = ChangeState
-trigger1 = Parent, StateNo = 2011
-trigger1 = Parent, AnimElem = 2
-value = 2013
-ignorehitpause = 1
-
-[State 2012, Fail]
-type = DestroySelf
-trigger1 = Parent, StateNo != 2010
-trigger1 = Parent, StateNo != 2011
-ignorehitpause = 1
-
-;Dark Matter Projectile
-[Statedef 2013]
 type    = A
 movetype= A
 physics = N
 poweradd= 0
 ctrl = 0
-sprpriority = 0
+sprpriority = 3
 juggle = 14
+anim = 7210
+velset = 4, 6
 
-[State 2013, Damage Var]
-type = VarSet
-trigger1 = !Time && PrevStateNo != 2014
-V = 0
-value = 0
+[State 2012, Prevent Undergound Juggles]
+type= targetbind
+trigger1= movehit=1
+trigger1= numtarget=1 && numenemy
+trigger1= (target,time<=1) && (target,ID=enemynear,ID); this is just to prevent Simul issues as usual
+trigger1= !(target,hitshakeover) && (target, hitfall) && (target, pos y>0)
+pos= ceil(p2dist x), ceil(-pos y); keeps P2 at the same horizontal distance, but resets his Y position
+ignorehitpause= 1
 
-[State 1001, Dampen]
-Type = ParentVarset
-Trigger1 = MoveHit
-trigger1 = Var(0)
-trigger1 = Var(0) := 1
-fvar(39) = parent, Fvar(39)*0.86
-persistent = 0
+[State 2013, End]
+type = Trans
+trigger1 = AnimElemTime(1) = [0, 8]
+trans = addalpha
+alpha = 32 * AnimElemTime(1), 256 - 16 * AnimElemTime(1)
 ignorehitpause = 1
 
-[State 2013, PosAdd]
-type = ChangeAnim
-trigger1 = !Time && PrevStateNo != 2014
-value = 7210
+[State 2013, NormalScale]
+type = AngleDraw
+trigger1 = 1
+scale = 0.5, 0.5
 ignorehitpause = 1
 
-[State 2013, PosAdd]
-type = VelSet
-trigger1 = !Time && PrevStateNo != 2014
-X = 3
+[State 2013, End]
+type = Trans
+trigger1 = AnimElemTime(1) > 8
+trans = addalpha
+alpha = 256, 128
 ignorehitpause = 1
 
 [State 2013, Override]
@@ -533,14 +537,8 @@ type = HitOverride
 trigger1 = 1
 attr = SCA,AA, AP
 slot = 0
-stateno = 2014
+stateno = 2013
 time = 1
-ignorehitpause = 1
-
-[State 2013, Override]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
 ignorehitpause = 1
 
 [State 2013, Override]
@@ -552,35 +550,34 @@ ignorehitpause = 1
 
 [State 2013, HitDef]
 type = HitDef
-trigger1 = Time % 10 = 0
-trigger1 = AnimElemNo(0) < 53
+trigger1 = !Time 
 attr = S, HP
-damage = Ceil(22 * Parent, FVar(39)),3
+damage = 72,3
 animtype = Hard
 air.type = Low
 guardflag = M
 hitflag = MAF
 priority = 4, Hit
-pausetime = 0,19
+pausetime = 0,25
 sparkno = -1
 hitsound = S7020,5
 guardsound = 5,0
 ground.type = Low
 ground.velocity = 0, 0
-ground.hittime = 5
+ground.hittime = 25
+air.hittime = 25
 ground.slidetime = 5
 guard.velocity = -1
 air.velocity = 0,0
 airguard.velocity = 0, 0
-air.hittime = 5
 ground.cornerpush.veloff = 0
 air.cornerpush.veloff = 0
 airguard.cornerpush.veloff = 0
 yaccel = 0.4
 air.fall = 1
 fall = 1
-p1sprpriority = 0
-p2sprpriority = 2
+p1sprpriority = 2
+p2sprpriority = 0
 fall.recover = 0
 fall.recovertime = 120
 fall.animtype = Medium
@@ -589,56 +586,22 @@ givepower = 36, 36
 envshake.time = 16
 envshake.freq = 120
 envshake.ampl = 4
+palfx.invertall = 0
 palfx.color = 0
-palfx.invertall = 1
-palfx.add = 140, 120, 180
-palfx.mul = 256, 256, 256
-palfx.time = 20
-ignorehitpause = 1
-
-[State 2013, End]
-type = Trans
-trigger1 = AnimElemTime(1) = [0, 32]
-trans = addalpha
-alpha = 8 * AnimElemTime(1), 256 - 8 * AnimElemTime(1)
-ignorehitpause = 1
-
-[State 2013, End]
-type = VelMul
-trigger1 = AnimElemNo(0) > 40
-trigger2 = PrevStateNo = 2014
-trigger3 = NumTarget
-trigger3 = (Vel X * Facing * (ScreenPos X - Target, ScreenPos X) > 0) ;|| (Vel X < 0 && (ScreenPos X < Target, ScreenPos X))
-X = IfElse(MoveContact, 0, 0.93)
-ignorehitpause = 1
-
-[State 2013, End]
-type = Trans
-trigger1 = AnimElemTime(53) > 0
-trans = addalpha
-alpha = 256 - 8 * AnimElemTime(53), 8 * AnimElemTime(53)
-ignorehitpause = 1
-
-[State 2013, NormalScale]
-type = AngleDraw
-trigger1 = AnimElemTime(53) <= 0
-scale = 0.5, 0.5
-ignorehitpause = 1
-
-[State 2013, End]
-type = AngleDraw
-trigger1 = AnimElemTime(53) > 0
-scale = 0.5 - 0.5 * AnimElemTime(53)/32.0, 0.5 - 0.5 * AnimElemTime(53)/32.0
+palfx.add = 80, 80, 180
+palfx.time = 26
 ignorehitpause = 1
 
 ;End
 [State 2013, End]
-type = DestroySelf
-trigger1 = AnimElemTime(53) > 32
+type = ChangeState
+trigger1 = Pos Y >= - Vel Y
+trigger1 = Vel Y > 0
+value = 2014
 ignorehitpause = 1
 
-;Dark Matter GetHit
-[Statedef 2014]
+;Ice Block GetHit
+[Statedef 2013]
 type    = A
 movetype= H
 physics = N
@@ -648,28 +611,15 @@ sprpriority = 3
 
 [State 2013, End]
 type = Trans
-trigger1 = AnimElemTime(1) = [0, 32]
+trigger1 = 1
 trans = addalpha
-alpha = 8 * AnimElemTime(1), 256 - 8 * AnimElemTime(1)
-ignorehitpause = 1
-
-[State 2013, End]
-type = Trans
-trigger1 = AnimElemTime(53) > 0
-trans = addalpha
-alpha = 256 - 8 * AnimElemTime(53), 8 * AnimElemTime(53)
+alpha = 256, 128
 ignorehitpause = 1
 
 [State 2013, NormalScale]
 type = AngleDraw
-trigger1 = AnimElemTime(53) <= 0
+trigger1 = 1
 scale = 0.5, 0.5
-ignorehitpause = 1
-
-[State 2013, End]
-type = AngleDraw
-trigger1 = AnimElemTime(53) > 0
-scale = 0.5 - 0.5 * AnimElemTime(53)/32.0, 0.5 - 0.5 * AnimElemTime(53)/32.0
 ignorehitpause = 1
 
 [State 2014, PosFreeze]
@@ -690,25 +640,63 @@ type = HitOverride
 trigger1 = 1
 attr = SCA,AA, AP
 slot = 0
-stateno = 2014
+stateno = 2013
 time = 1
-ignorehitpause = 1
-
-[State 2013, Override]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
 ignorehitpause = 1
 
 [State 2004, End]
 type = ChangeState
 trigger1 = Time > GetHitVar(HitTime)
-value = 2013
+value = 2012
+ignorehitpause = 1
+
+;Ice Block End
+[Statedef 2014]
+type    = A
+movetype= H
+physics = N
+poweradd= 0
+ctrl = 0
+velset = 0
+sprpriority = 3
+
+[State 2013, NormalScale]
+type = EnvShake
+trigger1 = !Time
+time = 24
+ampl = 6
+freq = 120
+ignorehitpause = 1
+
+[State 2013, NormalScale]
+type = ChangeAnim
+trigger1 = !Time
+value = 7211
+ignorehitpause = 1
+
+[State 2013, NormalScale]
+type = AngleDraw
+trigger1 = Time
+scale = 0.5, 0.5
+ignorehitpause = 1
+
+[State 2013, End]
+type = Trans
+trigger1 = 1
+trans = addalpha
+alpha = 256 - 16 * AnimElemTime(1), 128 + 8 * AnimElemTime(1)
+ignorehitpause = 1
+
+
+[State 2014, PosFreeze]
+trigger1 = 1
+type = PosFreeze
+value = 1
 ignorehitpause = 1
 
 [State 2013, End]
 type = DestroySelf
-trigger1 = AnimElemTime(53) > 32
+trigger1 = !AnimTime
 ignorehitpause = 1
 
 ;---------------------------------------------------------------------------
