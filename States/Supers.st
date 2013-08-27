@@ -83,18 +83,50 @@ trigger1 = !AnimTime
 value = 0
 ctrl = 1
 
-
-; Guardia Soldiers - Hit
+; Guardia Soldiers - Success
 [Statedef 2002]
 type = S
 movetype = A
 physics = N
 sprpriority = 1
+anim = 2002
+
+[State 2002, Bind]
+type = VarSet
+trigger1 = !Time
+V = 0
+value = 0
+
+[State 2002, Bind]
+type = VarSet
+trigger1 = !Time
+FV = 0
+value = Target, Pos X 
+
+[State 2002, Bind]
+type = VarSet
+trigger1 = !Time
+FV = 1
+value = Target, Pos Y
 
 [State 2002, Bind]
 type = TargetBind
 trigger1 = 1
-pos = 0,0
+pos = Facing * (FVar(0) - Pos X), FVar(1) - Pos Y
+
+[State 2002, Soldier]
+type = Helper
+trigger1 = Time % 30 = 29
+trigger1 = NumTarget
+trigger1 = NumHelper(2000) < 6
+name = "Guardia Soldier"
+ID = 2000
+stateno = 2005
+pos = IfElse(NumHelper(2000) % 2 > 0, (- ScreenPos X - 10)*Facing, (GameWidth - ScreenPos X + 10)*Facing)
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
 
 ; Guardia Soldiers - Hit
 [Statedef 2003]
@@ -162,6 +194,112 @@ type = SelfState
 trigger1 = (Vel y > 0) && (Pos y >= -Vel Y)
 value = 5100
 ctrl = 0
+
+;Guardia Soldier
+[Statedef 2005]
+type    = A
+movetype= A
+physics = N
+poweradd= 0
+ctrl = 0
+sprpriority = 2
+juggle = 14
+anim = 7200
+
+[State 2013, Turn]
+type = Turn
+triggerall = !Time
+triggerall = !(Var(0) := 0)
+trigger1 = ScreenPos X > GameWidth
+trigger1 = Facing > 0
+trigger2 = ScreenPos X < 0
+trigger2 = Facing < 0
+
+[State 2013, Turn]
+type = VelSet
+trigger1 = !Time
+X = 3
+
+[State 2013, Turn]
+type = ChangeAnim
+trigger1 = Abs(Pos X - Parent, FVar(0)) < 80
+value = 7201
+persistent = 0
+
+[State 2013, Turn]
+type = VelSet
+trigger1 = Abs(Pos X - Parent, FVar(0)) < 80
+X = 3
+Y = -5
+persistent = 0
+
+[State 2013, Turn]
+type = VelAdd
+trigger1 = Anim = 7201
+Y = 0.43
+
+[State 2013, Turn]
+type = ChangeAnim
+trigger1 = Anim = 7201 && Pos Y > 0
+trigger1 = Var(0) := 1
+value = 7203
+persistent = 0
+
+[State 2013, Turn]
+type = VelSet
+trigger1 = Anim = 7203
+X = 0
+Y = 0
+persistent = 0
+
+[State 2013, Turn]
+type = PosSet
+trigger1 = Anim = 7203
+Y = 0
+persistent = 0
+
+[State 2013, Turn]
+type = Helper
+trigger1 = Anim = 7203
+trigger1 = Time % 16 = 0
+ID = 2006
+stateno = 2006
+name = "Cloud"
+pos = Random % 50, -Random % 60
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+supermovetime = 999999
+
+; Fight Clouds
+[Statedef 2006]
+type = A
+movetype = I
+physics = N
+ctrl = 0
+velset = 0,0
+sprpriority = 4
+
+[State 2110, Anim]
+type = ChangeAnim
+trigger1 = !Time
+value = 7205 + (Random % 2)
+
+[State 2110, Scale]
+type = AngleDraw
+trigger1 = 1
+scale = 1 + Time/10.0, 1 + Time/10.0
+
+[State 2110, Scale]
+type = Trans
+trigger1 = 1
+trans = addalpha
+alpha = 256 - 16 * (Time), 16 * (Time)
+
+[State 2110, DestroySelf]
+type = DestroySelf
+trigger1 = Time > 16
 
 
 
