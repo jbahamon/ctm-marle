@@ -89,12 +89,24 @@ type = S
 movetype = A
 physics = N
 sprpriority = 1
-anim = 2002
+anim = 2005
 
 [State 2002, Bind]
 type = VarSet
 trigger1 = !Time
 V = 0
+value = 0
+
+[State 2002, Bind]
+type = VarSet
+trigger1 = !Time
+V = 1
+value = 0
+
+[State 2002, Bind]
+type = VarSet
+trigger1 = !Time
+V = 2
 value = 0
 
 [State 2002, Bind]
@@ -110,6 +122,45 @@ FV = 1
 value = Target, Pos Y
 
 [State 2002, Bind]
+type = VarAdd
+trigger1 = Target, StateNo = 2003
+FV = 0
+value = 2
+
+[State 2002, Bind]
+type = VarAdd
+trigger1 = Target, StateNo = 2003
+FV = 1
+value = -4 + Time * 0.43
+
+[State 2002, Bind]
+type = TargetState
+trigger1 = Target, StateNo = 2003
+trigger1 = FVar(1) >= 0
+value = 2004
+
+[State 2002, Bind]
+type = VarSet
+trigger1 = Target, StateNo = 2004
+FV = 1
+value = 0
+persistent = 0
+
+[State 2002, Bind]
+type = EnvShake
+trigger1 = Target, StateNo = 2004
+freq = 120
+ampl = 6
+time = 6
+persistent = 0
+
+[State 2002, Bind]
+type = ChangeAnim
+trigger1 = Target, StateNo = 2004
+value = 2002
+persistent = 0
+
+[State 2002, Bind]
 type = TargetBind
 trigger1 = 1
 pos = Facing * (FVar(0) - Pos X), FVar(1) - Pos Y
@@ -118,26 +169,69 @@ pos = Facing * (FVar(0) - Pos X), FVar(1) - Pos Y
 type = Helper
 trigger1 = Time % 30 = 29
 trigger1 = NumTarget
-trigger1 = NumHelper(2000) < 6
+trigger1 = Var(2) < 6
+trigger1 = (Var(2) := Var(2) + 1)
 name = "Guardia Soldier"
-ID = 2000
+ID = 2000 + Var(2)
 stateno = 2005
-pos = IfElse(NumHelper(2000) % 2 > 0, (- ScreenPos X - 10)*Facing, (GameWidth - ScreenPos X + 10)*Facing)
+pos = IfElse(Var(2) % 2 > 0, (- ScreenPos X - 10)*Facing, (GameWidth - ScreenPos X + 10)*Facing)
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
 ownpal = 1
 
-; Guardia Soldiers - Hit
+[State 2002, Turn]
+type = Helper
+trigger1 = Var(0)
+trigger1 = Time % 3 = 0
+ID = 2006
+stateno = 2006
+name = "Cloud"
+pos = Facing * (FVar(0) - Pos X) + Random % 70 - 35, FVar(1) - Pos Y - Random % 30 + 10
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+supermovetime = 999999
+
+[State 2002, Shake]
+type = EnvShake
+trigger1 = Var(0)
+trigger1 = Var(1) < 80
+trigger1 = Time % 3 = 0 && Random % 2
+freq = 120
+ampl = 6 + Random % 4
+time = 6 + Random % 4
+
+[State 2002, Time]
+type = VarAdd
+trigger1 = Var(0) = 6
+V = 1
+value = 1
+
+[State 2002, Time]
+type = TargetLifeAdd
+trigger1 = Var(0) = 6
+trigger1 = Var(1) < 80
+trigger1 = Var(1) % 6 = 0
+value = -12
+
+[State 2002, Time]
+type = ChangeState
+trigger1 = Var(1) = 120
+value = 0
+ctrl = 1
+
+; Guardia Soldiers - Hit 1
 [Statedef 2003]
-type = S
+type = A
 movetype = H
 physics = N
 sprpriority = 1
 
 [State 2023, Anim]
 type = ChangeAnim2
-trigger1 = Anim != 2003
+trigger1 = !Time
 value = 2003
 ignorehitpause = 1
 
@@ -159,46 +253,29 @@ type = SelfState
 trigger1 = !gethitvar(isbound)
 value = 5050
 
-
-; Guardia Soldiers - End
+; Guardia Soldiers - On ground
 [Statedef 2004]
-type = A
+type = L
 movetype = H
 physics = N
 ctrl = 0
 sprpriority = 0
-
-[State 2024, Vel]
-type = VelSet
-trigger1 = !Time
-y = -9
-x = -2
-
-[State 2024, Vel]
-type = VelAdd
-trigger1 = 1
-y = .56
 
 [State 2024, Anim]
 type = ChangeAnim2
 trigger1 = !Time
 value = 2004
 
-[State 2024, Vel]
-type = ChangeAnim2
-trigger1 = Vel Y > 0
-value = 2005
-
 [State 803, Hit Ground]
 type = SelfState
-trigger1 = (Vel y > 0) && (Pos y >= -Vel Y)
+trigger1 = !GetHitVar(isbound)
 value = 5100
 ctrl = 0
 
 ;Guardia Soldier
 [Statedef 2005]
-type    = A
-movetype= A
+type    = S
+movetype= I
 physics = N
 poweradd= 0
 ctrl = 0
@@ -219,6 +296,12 @@ trigger2 = Facing < 0
 type = VelSet
 trigger1 = !Time
 X = 3
+
+[State 2013, Turn]
+type = VarSet
+trigger1 = !Time
+V = 1
+value = Parent, Var(2)
 
 [State 2013, Turn]
 type = ChangeAnim
@@ -258,19 +341,37 @@ trigger1 = Anim = 7203
 Y = 0
 persistent = 0
 
-[State 2013, Turn]
-type = Helper
+[State 2013, Parent]
+type = ParentVarAdd
 trigger1 = Anim = 7203
-trigger1 = Time % 16 = 0
-ID = 2006
-stateno = 2006
-name = "Cloud"
-pos = Random % 50, -Random % 60
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-supermovetime = 999999
+V = 0
+value = 1
+persistent = 0
+
+[State 2013, Turn]
+type = VarAdd
+trigger1 = Parent, StateNo != 2002
+trigger2 = Var(0) >= 2
+trigger3 = Parent, Var(1) > 70
+V = 0
+value = 1
+
+[State 2013, End]
+type = VelSet
+trigger1 = Var(0) > Var(1)*10
+X = 3
+persistent = 0
+
+[State 2013, End]
+type = ChangeAnim
+trigger1 = Anim != 7200 && Var(0) >= 2
+value = 7200
+
+[State 2013, End]
+type = DestroySelf
+triggerall = Var(0) >= 2
+trigger1 = ScreenPos X < -20
+trigger1 = ScreenPos X > (GameWidth + 20)
 
 ; Fight Clouds
 [Statedef 2006]
@@ -289,19 +390,17 @@ value = 7205 + (Random % 2)
 [State 2110, Scale]
 type = AngleDraw
 trigger1 = 1
-scale = 1 + Time/10.0, 1 + Time/10.0
+scale = 0.7 + Time/30.0, 0.7 + Time/30.0
 
 [State 2110, Scale]
 type = Trans
-trigger1 = 1
+trigger1 = Time > 16
 trans = addalpha
-alpha = 256 - 16 * (Time), 16 * (Time)
+alpha = 256 - 32 * (Time - 16), 32 * (Time - 16)
 
 [State 2110, DestroySelf]
 type = DestroySelf
-trigger1 = Time > 16
-
-
+trigger1 = Time > 24
 
 ;---------------------------------------------------------------------------
 ; Ice II
