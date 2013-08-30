@@ -125,7 +125,7 @@ value = Target, Pos Y
 type = VarAdd
 trigger1 = Target, StateNo = 2003
 FV = 0
-value = 2
+value = Facing * 2
 
 [State 2002, Bind]
 type = VarAdd
@@ -333,6 +333,11 @@ type = VelSet
 trigger1 = Anim = 7203
 X = 0
 Y = 0
+persistent = 0
+
+[State 2013, Turn]
+type = Turn
+trigger1 = Var(0) = 2
 persistent = 0
 
 [State 2013, Turn]
