@@ -83,20 +83,32 @@ down.friction.threshold = .05         ;If the player's speed drops below this th
 
 [Quotes]
 ; Up to 100 victory quotes can be specified per language (victory0 - victory99)
-victory1 = "The weak always strive to be weaker..."
-victory2 = "If history is to change, let it change. If the world is to be destroyed, so be it. If my fate is to die, I must simply laugh."
-victory3 = "Play with fire and you get burned."
-victory4 = "Say, can you hear that? \nIt's the sound of the Reaper..."
-victory5 = "The black wind begins to blow..."
+victory1 = "Time travel... how exhausting!"
+victory2 = "Boy, this is exciting!"
+victory3 = "I can't sit around doing nothing!"
+victory4 = "I guess this wraps things up."
+victory5 = "Just because I have a title doesn't\nmean I'm not a person!"
 
 ;Against Lavos
-victory6 = "It's over for you... \nYour life ends here!"
+victory6 = "This is Crono's and our's... Everyone's...!\n ...and I mean, EVERYONE's world!!"
 
 ;Against Frog
-victory7 = "I... it's that stupid frog! \nKissed any princesses lately?!"
+victory7 = "Eeeek!"
 
-;Against Crono
-victory8 = "You got whacked, 'cuz you're weak."
+; Against Lucca
+victory8 = "I would trade my royal ancestry for your genius in a heartbeat!"
+
+; Against Crono
+victory9 = "Crono! We can't keep sponging off my dad! Go out and get a job!"
+
+; Against Marle
+victory10 = "This is kinda creepy."
+
+; Against Ayla
+victory11 = "Ayla!\n Mellow out!"
+
+;Against Magus
+victory12 = "What an arrogant pig!"
 
 ;---------------------------------------------------------------------------
 ; Variable usage:
@@ -115,21 +127,181 @@ victory8 = "You got whacked, 'cuz you're weak."
 ; Overriding of common states
 ;---------------------------------------------------------------------------
 
+; Walk
+[Statedef 20]
+type    = S
+physics = S
+sprpriority = 0
+
+[State 20, 1]
+type = VelSet
+trigger1 = command = "holdfwd"
+x = const(velocity.walk.fwd.x) * IfElse(Var(21) > 0, 2, 1)
+
+[State 20, 2]
+type = VelSet
+trigger1 = command = "holdback"
+x = const(velocity.walk.back.x) * IfElse(Var(21) > 0, 2, 1)
+
+[State 20, 3]
+type = ChangeAnim
+triggerall = vel x > 0
+trigger1 = Anim != 20 && Anim != 5
+trigger2 = Anim = 5 && AnimTime = 0
+value = 20
+
+[State 20, 4]
+type = ChangeAnim
+triggerall = vel x < 0
+trigger1 = Anim != 21 && Anim != 5
+trigger2 = Anim = 5 && AnimTime = 0
+value = 21
+
+; Jump Start
+[Statedef 40]
+type    = S
+physics = S
+anim = 40
+ctrl = 0
+sprpriority = 1
+facep2 = 1
+
+[State 40, 1]
+type = VarSet
+trigger1 = Time = 0
+sysvar(1) = 0
+
+[State 40, 2]
+type = VarSet
+trigger1 = command = "holdfwd"
+sysvar(1) = 1
+
+[State 40, 3]
+type = VarSet
+trigger1 = command = "holdback"
+sysvar(1) = -1
+
+[State 40, 4]
+type = VelSet
+trigger1 = AnimTime = 0
+x = ifelse(sysvar(1)=0, const(velocity.jump.neu.x), ifelse(sysvar(1)=1, const(velocity.jump.fwd.x), const(velocity.jump.back.x))) * IfElse(Var(21) > 0, 2, 1)
+y = const(velocity.jump.y)
+
+[State 40, 5]
+type = VelSet
+trigger1 = AnimTime = 0
+trigger1 = prevstateno = 100 ;RUN_FWD
+trigger1 = sysvar(1) = 1
+x = const(velocity.runjump.fwd.x) * IfElse(Var(21) > 0, 2, 1)
+
+[State 40, 6]
+type = ChangeState
+trigger1 = AnimTime = 0
+value = 50
+ctrl = 1
+
+;---------------------------------------------------------------------------
+; AirJump Start
+[Statedef 45]
+type    = A
+physics = N
+ctrl = 0
+velset = 0,0
+
+[State 45, 1]
+type = ChangeAnim
+trigger1 = SelfAnimExist(44)
+value = 44
+
+[State 45, 2]
+type = ChangeAnim
+trigger1 = !SelfAnimExist(44)
+value = 41
+
+[State 45, 3]
+type = VarSet
+trigger1 = Time = 0
+sysvar(1) = 0
+
+[State 45, 4]
+type = VarSet
+trigger1 = command = "holdfwd"
+sysvar(1) = 1
+
+[State 45, 5]
+type = VarSet
+trigger1 = command = "holdback"
+sysvar(1) = -1
+
+[State 45, 6]
+type = VelSet
+trigger1 = Time = 2
+x = ifelse(sysvar(1)=0, const(velocity.airjump.neu.x), ifelse(sysvar(1)=1, const(velocity.airjump.fwd.x), const(velocity.airjump.back.x)))* IfElse(Var(21) > 0, 2, 1)
+y = const(velocity.airjump.y)
+
+[State 45, 7]
+type = ChangeState
+trigger1 = Time = 2
+value = 50
+ctrl = 1
+
+;---------------------------------------------------------------------------
+; Run forward
+[Statedef 100]
+type    = S
+physics = S
+anim = 100
+sprpriority = 1
+
+[State 100, 1]
+type = VelSet
+trigger1 = 1
+x = const(velocity.run.fwd.x)* IfElse(Var(21) > 0, 2, 1)
+
+[State 100, 2] ;Prevent run from canceling into walk
+type = AssertSpecial
+trigger1 = 1
+flag = NoWalk
+
+[State 100, 3] ;Prevent from turning
+type = AssertSpecial
+trigger1 = 1
+flag = NoAutoTurn
+
+[State 100, 4]
+type = ChangeState
+trigger1 = command != "holdfwd"
+value = 0
+
+;---------------------------------------------------------------------------
+; Hop backwards
+[Statedef 105]
+type    = A
+physics = A
+ctrl = 0
+anim = 105
+sprpriority = 1
+
+[State 105, 1]
+type = VelSet
+trigger1 = Time = 0
+x = const(velocity.run.back.x)* IfElse(Var(21) > 0, 2, 1)
+y = const(velocity.run.back.y)
+
+[State 105, 2]
+type = CtrlSet
+trigger1 = Time = 2
+value = 1
+
+[State 105, 3]
+type = ChangeState
+trigger1 = Vel Y > 0
+trigger1 = Pos Y >= 0
+value = 106
+
 ;---------------------------------------------------------------------------
 ; States that are always executed (use statedef -2)
 ;---------------------------------------------------------------------------
-
-[Statedef -2]
-
-[State -2, Dampener]
-Type=VarSet
-Trigger1=Roundstate<2
-Trigger2=P2Stateno=[120,160]
-Trigger3=enemynear,ctrl
-Trigger4=P2StateType!=A
-Trigger4=P2MoveType!=H
-fvar(39)=1
-ignorehitpause=1
 
 
 ;---------------------------------------------------------------------------
@@ -179,6 +351,15 @@ type = PowerAdd
 trigger1 = Var(21) > 0 && StateNo != 2110 && StateNo != [2100, 2102]
 value = IfElse(Power > 3, -3, -Power)
 ignorehitpause = 1
+
+[State -3: ChangeAnim]
+type = ChangeAnim
+triggerall = (Var(21) > 0) && (RoundState = 2) && (MoveType != H) && StateNo != [2100, 2102]
+trigger1 = AnimElemTime(AnimElemNo(0) + 1) < 0
+trigger1 = AnimElemTime(AnimElemNo(0)) > floor ((AnimElemTime(AnimElemNo(0)) - AnimElemTime(AnimElemNo(0) + 1))/2)
+ignorehitpause = 1
+value = Anim
+elem = AnimElemNo(0) + 1
 
 [State -3: VarSet]
 type = VarSet

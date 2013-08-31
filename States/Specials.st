@@ -159,7 +159,6 @@ ctrl = 0
 anim = 7102
 sprpriority = 4
 
-
 [State 1000, Fade]
 type = RemoveExplod
 trigger1 = !Time
@@ -371,7 +370,7 @@ type = HitOverride
 trigger1 = 1
 time = -1
 attr = SCA, AA, AP
-stateno = 1002
+stateno = 1022
 ignorehitpause = 1
 
 [State 1021, HB]
@@ -436,6 +435,49 @@ ignorehitpause = 1
 type = DestroySelf
 trigger1 = !AnimTime
 ignorehitpause = 1
+
+; Ice Spike
+[Statedef 1022]
+type    = S
+movetype= A
+physics = N
+juggle  = 3
+ctrl = 0
+anim = 7120
+sprpriority = 2
+
+[State 1021, Strength]
+type = ChangeAnim
+trigger1 = !Time
+value = 7120
+elem = 9
+ignorehitpause = 1
+
+[State 1021, HB]
+type = NotHitBy
+trigger1 = 1
+time = -1
+value = SCA
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = AngleDraw
+trigger1 = 1
+scale = 0.5, 0.5
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = AnimElemNo(0) = 9
+trans = addalpha
+alpha = 256 - AnimElemTime(9) * 8, 256
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = DestroySelf
+trigger1 = !AnimTime
+ignorehitpause = 1
+
 
 
 ;---------------------------------------------------------------------------

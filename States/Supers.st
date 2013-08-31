@@ -172,7 +172,7 @@ trigger1 = NumTarget
 trigger1 = Var(2) < 6
 trigger1 = (Var(2) := Var(2) + 1)
 name = "Guardia Soldier"
-ID = 2000 + Var(2)
+ID = 2000
 stateno = 2005
 pos = IfElse(Var(2) % 2 > 0, (- ScreenPos X - 10)*Facing, (GameWidth - ScreenPos X + 10)*Facing)
 postype = p1    ;p2,front,back,left,right
@@ -198,10 +198,21 @@ supermovetime = 999999
 type = EnvShake
 trigger1 = Var(0)
 trigger1 = Var(1) < 80
-trigger1 = Time % 3 = 0 && Random % 2
+trigger1 = Time % 6 = 0 
 freq = 120
 ampl = 6 + Random % 4
 time = 6 + Random % 4
+
+
+[State 2002, Shake]
+type = EnvShake
+trigger1 = Var(0)
+trigger1 = Var(1) < 80
+trigger1 = Time % 6 = 3 && Random % 2 
+freq = 120
+ampl = 6 + Random % 4
+time = 6 + Random % 4
+
 
 [State 2002, Time]
 type = VarAdd
@@ -216,11 +227,17 @@ trigger1 = Var(1) < 80
 trigger1 = Var(1) % 6 = 0
 value = -12
 
+[State 2022, Let Target Go]
+type = TargetDrop
+trigger1 = NumTarget
+trigger1 = Var(1) > 80
+
 [State 2002, Time]
 type = ChangeState
 trigger1 = Var(1) = 120
 value = 0
 ctrl = 1
+
 
 ; Guardia Soldiers - Hit 1
 [Statedef 2003]
@@ -470,7 +487,7 @@ trigger1 = !Time
 V = 0
 value = 0
 
-[State 2011, Dark Matter]
+[State 2011, Ice II]
 type = Helper
 trigger1 = !Time
 name = "Ice 2"
@@ -483,7 +500,7 @@ keyctrl = 0
 ownpal = 1
 persistent = 0
 
-[State 2011, Dark Matter]
+[State 2011, Ice II]
 type = Helper
 trigger1 = Time > 0
 trigger1 = !NumHelper(2010)
@@ -514,7 +531,7 @@ physics = N
 poweradd= 0
 ctrl = 0
 sprpriority = 3
-juggle = 14
+juggle = 10
 anim = 7210
 velset = 4, 6
 
@@ -573,17 +590,17 @@ air.type = Low
 guardflag = M
 hitflag = MAF
 priority = 4, Hit
-pausetime = 0,25
+pausetime = 0,27
 sparkno = -1
 hitsound = S7020,5
 guardsound = 5,0
 ground.type = Low
-ground.velocity = 0, 0
+ground.velocity = 0, -3
 ground.hittime = 25
 air.hittime = 25
 ground.slidetime = 5
 guard.velocity = -1
-air.velocity = 0,0
+air.velocity = 0,-3
 airguard.velocity = 0, 0
 ground.cornerpush.veloff = 0
 air.cornerpush.veloff = 0
@@ -594,8 +611,6 @@ fall = 1
 p1sprpriority = 2
 p2sprpriority = 0
 fall.recover = 0
-fall.recovertime = 120
-fall.animtype = Medium
 getpower = 0, 0
 givepower = 36, 36
 envshake.time = 16
@@ -715,6 +730,234 @@ trigger1 = !AnimTime
 ignorehitpause = 1
 
 
+;---------------------------------------------------------------------------
+; Glacier
+[Statedef 2020]
+type    = S
+movetype= A
+physics = S
+ctrl = 0
+anim = 2020
+poweradd = -1000
+sprpriority = 2
+juggle = 14
+
+[State 2010, NHB]
+type = NotHitBy
+trigger1 = 1
+time = 1
+value = SCA
+
+[State 2010, Super Pause FX]
+type = helper
+trigger1 = time = 1
+helpertype = normal
+stateno = 7000
+ID = 7000
+name = "Super Charge"
+postype = p1
+pos = 0,0
+ownpal = 1
+persistent = 0
+supermovetime = 9999
+
+[State 2010, Super Pause]
+type = superpause
+trigger1 = time = 1
+time = 45
+movetime = 45
+anim = -1
+sound = S7010,2
+p2defmul = 1
+darken = 0
+
+[State 2010, End]
+type = ChangeState
+trigger1 = Time > 1 && !NumHelper(7000)
+value = 2021
+ctrl = 0
+
+;Glacier Summoning
+[Statedef 2021]
+type    = S
+movetype= A
+physics = S
+ctrl = 0
+anim = 2011
+sprpriority = 2
+facep2 = 1
+
+[State 2011, Glacier]
+type = Helper
+trigger1 = Time = 0
+trigger2 = Time = 15
+trigger3 = Time = 30
+name = "Glacier"
+ID = 2020
+stateno = 2022
+pos = 25 * (NumHelper(2020)), 0
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+
+[State 2011, End]
+type = ChangeState
+trigger1 = Time > 130
+trigger2 = NumHelper(2020) = 3
+value = 0
+ctrl = 1
+
+;Glaciers
+[Statedef 2022]
+type    = A
+movetype= A
+physics = N
+poweradd= 0
+ctrl = 0
+sprpriority = 3
+juggle = 0
+anim = 7219 + Parent, NumHelper(2020)
+
+[State 2012, Prevent Undergound Juggles]
+type= targetbind
+trigger1= movehit=1
+trigger1= numtarget=1 && numenemy
+trigger1= (target,time<=1) && (target,ID=enemynear,ID); this is just to prevent Simul issues as usual
+trigger1= !(target,hitshakeover) && (target, hitfall) && (target, pos y>0)
+pos= ceil(p2dist x), ceil(-pos y); keeps P2 at the same horizontal distance, but resets his Y position
+ignorehitpause= 1
+
+[State 2013, ScaleFactor]
+type = VarSet
+trigger1 = !Time
+V = 0
+value = Parent, NumHelper(2020)
+ignorehitpause = 1
+
+[State 2013, Scale]
+type = AngleDraw
+trigger1 = 1
+scale = 0.25 * (1 + Var(0)), 0.25 * (1 + Var(0))
+ignorehitpause = 1
+
+[State 1021, HitOverride]
+type = HitOverride
+trigger1 = 1
+time = -1
+attr = SCA, AA, AP
+stateno = 2023
+ignorehitpause = 1
+
+[State 2013, NormalScale]
+type = Trans
+trigger1 = 1
+trans = add
+ignorehitpause = 1
+
+[State 2013, Override]
+type = NotHitBy
+trigger1 = 1
+value = , AT
+time = 1
+ignorehitpause = 1
+
+[State 2013, HitDef]
+type = HitDef
+trigger1 = !Time 
+attr = S, HP
+damage = 28 + 20 * Var(0),3
+animtype = Hard
+air.type = Low
+guardflag = M
+hitflag = MAF
+priority = 4, Hit
+pausetime = 5,5
+sparkno = -1
+hitsound = S7020,5
+guardsound = 5,0
+ground.type = Low
+ground.velocity = -2, -3
+ground.hittime = 25
+air.hittime = 25
+ground.slidetime = 5
+guard.velocity = -1
+air.velocity = -2, -3
+airguard.velocity = 0, 0
+yaccel = 0.4
+air.fall = 1
+p1sprpriority = 2
+p2sprpriority = 0
+getpower = 0, 0
+givepower = 36, 36
+envshake.time = 16
+envshake.freq = 120
+envshake.ampl = 4
+palfx.invertall = 0
+palfx.color = 0
+palfx.add = 80, 80, 180
+palfx.time = 26
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = AnimElemNo(0) < 9
+trans = add
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = AnimElemNo(0) = 9
+trans = addalpha
+alpha = 256 - AnimElemTime(9) * 8, 256
+ignorehitpause = 1
+
+;End
+[State 2013, End]
+type = DestroySelf
+trigger1 = !AnimTime
+ignorehitpause = 1
+
+;Glacier GetHit
+[Statedef 2023]
+type    = S
+movetype= A
+physics = N
+juggle  = 3
+ctrl = 0
+sprpriority = 2
+
+[State 1021, Strength]
+type = ChangeAnim
+trigger1 = !Time
+value = 7219 + Parent, NumHelper(2020)
+elem = 9
+ignorehitpause = 1
+
+[State 1021, HB]
+type = NotHitBy
+trigger1 = 1
+time = -1
+value = SCA
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = AngleDraw
+trigger1 = 1
+scale = 0.25 * (1 + Var(0)), 0.25 * (1 + Var(0))
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = AnimElemNo(0) = 9
+trans = addalpha
+alpha = 256 - AnimElemTime(9) * 8, 256
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = DestroySelf
+trigger1 = !AnimTime
+ignorehitpause = 1
 
 ;---------------------------------------------------------------------------
 
@@ -1252,7 +1495,7 @@ trigger1 = Time > 16
 type = S
 movetype = I
 physics = S
-anim = 2200
+anim = 2020
 ctrl = 0
 velset = 0,0
 sprpriority = 1

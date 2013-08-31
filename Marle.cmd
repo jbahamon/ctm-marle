@@ -609,20 +609,21 @@ triggerall = Var(21) > 0
 trigger1 = statetype != A
 trigger1 = ctrl || ((stateno = [200, 299]) && time <= 10)
 ;---------------------------------------------------------------------------
-[State -1, Black Wind]
+[State -1, Glacier]
 type = ChangeState
 value = 2020
-triggerall = Command = "qcbhcfa" || Command = "qcbhcfb" || Command = "qcbhcfc"
+triggerall = Command = "2qcba" || Command = "2qcbb" || Command = "2qcbc" 
 triggerall = Power >= 1000
+triggerall = !NumHelper(2020)
 trigger1 = statetype != A
 trigger1 = ctrl
 trigger2 = ( StateNo = [200,299] ) && MoveHit
 trigger3 = ( StateNo = [400,499] ) && MoveHit
 ;---------------------------------------------------------------------------
-[State -1, Hell's Geyser]
+[State -1, Guardia Soldiers]
 type = ChangeState
 value = 2000
-triggerall = Command = "2qcba" || Command = "2qcbb" || Command = "2qcbc" 
+triggerall = Command = "qcbhcfa" || Command = "qcbhcfb" || Command = "qcbhcfc"
 triggerall = Power >= 1000
 triggerall = !NumHelper(2000)
 trigger1 = statetype != A
@@ -630,7 +631,7 @@ trigger1 = ctrl
 trigger2 = ( StateNo = [200,299] ) && MoveHit
 trigger3 = ( StateNo = [400,499] ) && MoveHit
 ;---------------------------------------------------------------------------
-[State -1, Dark Matter]
+[State -1, Ice II]
 type = ChangeState
 value = 2010
 triggerall = Command = "2qcfa" || Command = "2qcfb" || Command = "2qcfc" 
