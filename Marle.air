@@ -536,8 +536,46 @@ Clsn2Default: 1
 
 
 
-; Ice Riser
+; Provoke
 [Begin Action 1020]
+Clsn2: 1
+  Clsn2[0] = -8, -30, 4, -1
+1020,0, 0,0, 4
+Clsn1: 1
+  Clsn1[0] = 5, -25, 19, -8
+Clsn2: 3
+  Clsn2[0] = -4, -19, 6, -1
+  Clsn2[1] = -13, -26, 6, -12
+  Clsn2[2] = 5, -25, 19, -8
+1020,1, 0,0, 15
+Clsn1: 1
+  Clsn1[0] = 5, -25, 19, -8
+Clsn2: 3
+  Clsn2[0] = -4, -19, 6, -1
+  Clsn2[1] = -13, -26, 6, -12
+  Clsn2[2] = 5, -25, 19, -8
+1020,2, 0,0, 15
+Clsn1: 1
+  Clsn1[0] = 5, -25, 19, -8
+Clsn2: 3
+  Clsn2[0] = -4, -19, 6, -1
+  Clsn2[1] = -13, -26, 6, -12
+  Clsn2[2] = 5, -25, 19, -8
+1020,1, 0,0, 15
+Clsn2: 2
+  Clsn2[0] = -4, -19, 6, -1
+  Clsn2[1] = -13, -26, 6, -12
+1020,2, 0,0, 15
+; Provoke Counterattack
+[Begin Action 1021]
+Clsn1: 1
+  Clsn1[0] = -18, -32, 18, 0
+1020,1, 0,0, 15
+Clsn1: 1
+  Clsn1[0] = -18, -32, 18, 0
+1020,2, 0,0, 15
+; Ice Riser
+[Begin Action 1025]
 Clsn2Default: 1
   Clsn2[0] = -6, -25, 6, 0
 1000,0, 0,0, 2
@@ -640,37 +678,37 @@ LoopStart
 2020,5, 0,0, 6
 
 
-; Midnight Bliss
+; Freeze Completion
 [Begin Action 2100]
-Clsn2: 1
-  Clsn2[0] = -7, -29, 6, 0
-2100,0, 0,0, 12
-Clsn2: 1
-  Clsn2[0] = -7, -29, 6, 0
-120,1, 0,0, 7
-Clsn2: 1
-  Clsn2[0] = -7, -29, 7, 0
-2100,1, 0,0, 28
-LoopStart
-Clsn1: 1
-  Clsn1[0] = -2, -29, 7, 0
-Clsn2: 1
-  Clsn2[0] = -7, -29, 7, 0
-2100,1, 0,0, -1
-
-; MB - Success
-[Begin Action 2102]
 Clsn2Default: 1
-  Clsn2[0] = -7, -29, 8, 0
-1000,0, 0,0, 18
-1000,1, 0,0, 3
-1000,2, 0,0, 12
-1000,0, 0,0, -1
+  Clsn2[0] = -7, -29, 6, 0
+620,2, 0,0, 32
+Clsn1: 1
+  Clsn1[0] = 2, -21, 25, -1
+620,3, -2,0, 7
+Clsn1: 1
+  Clsn1[0] = 2, -21, 25, -1
+620,4, -2,0, 7
+Clsn1: 1
+  Clsn1[0] = 2, -21, 25, -1
+620,3, -2,0, 7
+Clsn1: 1
+  Clsn1[0] = 2, -21, 25, -1
+620,4, -2,0, 7
+; Freeze Completion - Success
+[Begin Action 2101]
+2200,0, 0,0, 6
+620,2, 0,0, 6
+1000,0, 0,0, 6
+1000,1, 0,0, 6
+LoopStart
+1000,2, 0,0, 6
+1000,3, 0,0, 6
 
 
 ; MB - GetHit
-[Begin Action 2103]
-5010,0, 0,0, -1
+[Begin Action 2102]
+5010,0, 0,0, 10
 
 
 ; MB - Draining
@@ -1204,6 +1242,10 @@ Clsn2: 1
 [Begin Action 7102]
 7100,8, 23,19, -1, , A
 
+;Ice Block - Centered
+[Begin Action 7103]
+7100,8, -2,51, -1, , A
+
 ; Aura
 [Begin Action 7110]
 7110,3, 0,0, 6, , A1
@@ -1472,13 +1514,28 @@ Clsn2: 1
 
 
 
-; Magic Wall Counter
+; Ice Woman 1 - Dancer
 [Begin Action 7250]
-Clsn1: 1
-  Clsn1[0] = -14, -36, 15, -1
-Clsn2: 1
-  Clsn2[0] = -14, -36, 15, -1
--1,0, 0,0, 10
+7250,0, 0,0, 26
+7250,3, 0,0, 6
+7250,4, 0,0, 6
+7250,5, 0,0, 6
+7250,1, 0,0, 3
+7250,2, 0,0, 3
+7250,0, 0,0, 16
+; Ice Woman 2 - Leene
+[Begin Action 7253]
+7253,0, 0,0, -1
+
+; Ice Woman 3 - Schala
+[Begin Action 7255]
+7255,0, 0,0, 6
+7255,1, 0,0, 6
+7255,0, 0,0, 6
+7255,1, 0,0, 6
+LoopStart
+7255,2, 0,0, 6
+7255,3, 0,0, 6
 
 ; Magic Wall Projectile
 [Begin Action 7251]

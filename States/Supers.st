@@ -961,7 +961,7 @@ ignorehitpause = 1
 
 ;---------------------------------------------------------------------------
 
-;Midnight Blackness
+;Freeze Completion
 [Statedef 2100]
 type=S
 physics=N
@@ -973,8 +973,15 @@ sprpriority=1
 poweradd = -3000
 
 [State 3060, nhb]
+type = VarSet
+trigger1 = !Time
+V = 21
+value = 0
+ignorehitpause = 1
+
+[State 3060, nhb]
 type = NotHitBy
-trigger1 = Time <=45
+trigger1 = Time <=32
 value = SCA
 time = 1
 ignorehitpause = 1
@@ -995,38 +1002,12 @@ supermovetime = 9999
 [State 2010, Super Pause]
 type = superpause
 trigger1 = time = 1
-time = 45
-movetime = 45
+time = 32
+movetime = 32
 anim = -1
 sound = S7000,2
 p2defmul = 1
 darken = 0
-
-[State 2020, Attack]
-type = VelSet
-trigger1 = AnimElemNo(0) >= 4
-X = 2.2
-
-[State -3: AfterImageTime]
-type = AfterImageTime
-trigger1 = AnimElemNo(0) = 4
-time = 5
-ignorehitpause = 1
-
-[State 1020, Afterimage]
-type = AfterImage
-trigger1 = AnimElem = 4
-length = 10
-palbright = 0, 0, 0
-palcontrast = 128, 128, 256
-paladd = 0,0,0
-palmul = 1, 1, 1
-timegap  = 2
-framegap = 2
-trans = add1
-time = 2; only 2 ticks!!!
-ignorehitpause = 1
-
 
 [State 3060,Hit]
 type = HitDef
@@ -1040,457 +1021,494 @@ p1sprpriority = 1
 p2sprpriority = 0
 p1facing = 1
 p2facing = 1
-p1stateno = 2102
-p2stateno = 2103
+p1stateno = 2101
+p2stateno = 2102
 guard.dist = 0
 fall = 1
 getpower = 0
 
 [State 2020, Attack]
 type = ChangeState
-trigger1 = Time >= 85 && !MoveHit
-value = 2101
-
-;Midnight Blackness Miss
-[Statedef 2101]
-type = C
-physics = C
-movetype = I
-anim = 2021
-ctrl = 0
-sprpriority = 1
-
-[State 2021, End]
-type = ChangeState
-trigger1 = !AnimTime
+trigger1 = !AnimTime && !MoveHit
 value = 0
 ctrl = 1
 
-;Midnight Blackness Success
-[Statedef 2102]
+;Freeze Completion Success
+[Statedef 2101]
 type = S
 physics = S
-movetype = I
-anim = 2102
+movetype=A
 ctrl = 0
 velset = 0, 0
 sprpriority = 1
 
+[State 2002, Bind]
+type = VarSet
+trigger1 = !Time
+FV = 0
+value = 30
+
+[State 2002, Bind]
+type = VarSet
+trigger1 = !Time
+FV = 1
+value = 0
+
+[State 2022, Bound]
+type = ChangeAnim
+trigger1 = Anim = 2100 && !AnimTime
+value = 2101
+persistent = 0
+
 [State 2022, Bound]
 type = PosAdd
-trigger1 = !Time && FrontEdgeBodyDist < 50
-X = - (50 - FrontEdgeBodyDist)
-
-[State 200, Explod]
-type = Explod
-trigger1 = Anim = 2102
-trigger1 = AnimElem = 4
-anim = 7260
-ID = 2100
-pos = 30, 0
-postype = p1  ;p2,front,back,left,right
-facing = 1
-vfacing = 1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
-scale = 1,1
-sprpriority = 4
-ontop = 0
-shadow = 0,0,0
-ownpal = 1
-removeongethit = 1
-ignorehitpause = 1
-
-
-[State 200, Explod]
-type = Explod
-trigger1 = Anim = 2102
-trigger1 = AnimElemNo(0) = 4
-trigger1 = !NumExplod(2100)
-anim = 7265
-ID = 2102
-pos = 30, 0
-postype = p1  ;p2,front,back,left,right
-facing = 1
-vfacing = 1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
-scale = 1,1
-sprpriority = 4
-ontop = 0
-shadow = 0,0,0
-ownpal = 1
-removeongethit = 1
-ignorehitpause = 1
-persistent = 0
+trigger1 = !Time && FrontEdgeBodyDist < 70
+X = - (70 - FrontEdgeBodyDist)
 
 [State 2002, Custom]
 type = Helper
 triggerall = NumTarget
-trigger1 = Anim = 2102
-trigger1 = AnimElemTime(4) = 20
-trigger2 = Anim = 2104 && AnimElemTime(3) = 60 
+trigger1 = Time = 40
 ID = 2100
 stateno = 2110
-name = "Cloud"
-pos = 37, Floor(1.3 * (Target, Const(size.mid.pos.y)) + IfElse(Anim = 2104, IfElse(NumHelper(2101), -30, (Target, Const(size.head.pos.y))), 0))
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-supermovetime = 999999
-
-[State 2002, Custom]
-type = Helper
-triggerall = NumTarget
-trigger1 = Anim = 2102
-trigger1 = AnimElemTime(4) = 20
-trigger2 = Anim = 2104 && AnimElemTime(3) = 60
-ID = 2100
-name = "Cloud"
-stateno = 2110
-pos = 30, Floor(0.7 * (Target, Const(size.mid.pos.y)) + IfElse(Anim = 2104, IfElse(NumHelper(2101), -30, (Target, Const(size.head.pos.y))), 0))
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-supermovetime = 999999
-
-[State 2002, Custom]
-type = Helper
-triggerall = NumTarget
-trigger1 = Anim = 2102
-trigger1 = AnimElemTime(4) = 20
-trigger2 = Anim = 2104 && AnimElemTime(3) = 60
-ID = 2100
-name = "Cloud"
-stateno = 2110
-pos = 37, Floor(IfElse(Anim = 2104, IfElse(NumHelper(2101), -30, (Target, Const(size.head.pos.y))), 0))
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-supermovetime = 999999
-
-[State 2002, Transform]
-type = TargetState
-trigger1 = NumTarget
-trigger1 = Anim = 2102
-trigger1 = AnimElemNo(0) = 4 
-trigger1 = NumHelper(2100)
-value = 2104
-persistent = 0
-
-[State 2002, Custom]
-type = Helper
-trigger1 = NumTarget
-trigger1 = !(Target, SelfAnimExist(12000)) || !(Target, SelfAnimExist(12001) )
-trigger1 = Target, StateNo = 2104
-ID = 2101
-name = "Replacement Helper"
-stateno = 2108
-pos = 30, 0
+name = "Dancer"
+pos = 37, Floor((Target, Const(size.mid.pos.y)))
 postype = p1    ;p2,front,back,left,right
 facing = -1
 keyctrl = 0
 ownpal = 1
-persistent = 0
 supermovetime = 999999
-
-[State 2002, Transform]
-type = ChangeAnim
-trigger1 = NumTarget
-trigger1 = Anim = 2102
-trigger1 = Target, StateNo = 2104
-trigger1 = !NumHelper(2100)
-value = 2104
 persistent = 0
 
-[State 2002, Transform]
-type = TargetState
-trigger1 = NumTarget
-trigger1 = Anim = 2104
-trigger1 = AnimElem = 3
-value = 2105
+
+[State 2002, Custom]
+type = Helper
+triggerall = NumTarget
+trigger1 = Time = 80
+ID = 2101
+stateno = 2113
+name = "Leene"
+pos = 0, 0
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+supermovetime = 999999
+persistent = 0
+
+
+[State 2002, Bind]
+type = VarAdd
+trigger1 = Time = [90, 120]
+FV = 0
+value = 0.4 
+
+[State 2002, Bind]
+type = VarAdd
+trigger1 = Time = [90, 120]
+FV = 1
+value = - 6 + (Time - 90) * 0.33
+
+[State 2002, Custom]
+type = Helper
+triggerall = NumTarget
+trigger1 = Time = 90
+ID = 2102
+stateno = 2108
+name = "Ice BG"
+pos = 0, 0
+postype = left ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+supermovetime = 999999
+persistent = 0
+
+[State 2002, Custom]
+type = Helper
+triggerall = NumTarget
+trigger1 = Time = 120
+ID = 2103
+stateno = 2109
+name = "Ice"
+pos = FVar(0) , FVar(1) + Floor(1.3 * (Target, Const(size.mid.pos.y)))
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+supermovetime = 999999
+persistent = 0
+
+[State 2002, Custom]
+type = Helper
+triggerall = NumTarget
+trigger1 = Time = 170
+ID = 2104
+stateno = 2115
+name = "Schala"
+pos = FVar(0) - 40 , FVar(1) + Floor(0.3 * (Target, Const(size.mid.pos.y)))
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+supermovetime = 999999
+persistent = 0
+
+[State 2002, Custom]
+type = Helper
+triggerall = NumTarget
+trigger1 = Time > 170
+trigger1 = !NumHelper(2104)
+ID = 2105
+stateno = 2107
+name = "Flash"
+pos = FVar(0) - 40 , FVar(1) + Floor(0.3 * (Target, Const(size.mid.pos.y)))
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+supermovetime = 999999
 persistent = 0
 
 [State 2022, Bound]
 type = TargetBind
-triggerall = NumTarget
-trigger1 = Target, StateNo = [2103, 2104]
-pos = 30, 0
-
-[State 2002, Transform]
-type = TargetBind
 trigger1 = NumTarget
-trigger1 = Target, StateNo = 2105
-pos = Floor(30 + 1.5*Sin(2*Time)), IfElse(!NumHelper(2101), Floor((Target, Const(size.head.pos.y))), 0)
+pos = FVar(0), FVar(1)
 
-[State 200, Send to Drain]
+[State 2022, Bound]
 type = TargetState
 trigger1 = NumTarget
-trigger1 = Anim = 2104
-trigger1 = AnimElemTime(3) = 60
-value = 2024
-ignorehitpause = 1
+trigger1 = NumHelper(2105)
+value = 2103
+persistent = 0
 
-[State 2022, Let Target Go]
+[State 2022, Bound]
 type = TargetDrop
 trigger1 = NumTarget
-trigger1 = Anim = 2104
-trigger1 = AnimElemTime(3) = 60
-
-[State 2022, Absorb Life - Enemy]
-type = TargetLifeAdd
-trigger1 = NumTarget
-trigger1 = Anim = 2104
-trigger1 = AnimElemTime(3) < 60
-value = -3
-
-[State 2022, Absorb Life - Self]
-type = LifeAdd
-trigger1 = NumTarget
-trigger1 = Anim = 2104
-trigger1 = AnimElemTime(3) < 60
-value = 1
-
-[State 2022, FX]
-type = PalFX
-trigger1 = NumTarget
-trigger1 = Anim = 2104
-trigger1 = AnimElem = 3
-time = 60
-add = 64, 64, 64
-sinadd = 64, 64, 64, 128
-mul = 256, 256, 256
-
-[State 2022, FX]
-type = PalFX
-trigger1 = !NumTarget
-time = 1
-add = 0, 0, 0
-mul = 256, 256, 256
-
-[State 2022, Go Back]
-type = ChangeAnim
-trigger1 = Anim = 2104
-trigger1 = !AnimTime
-value = 2105
-
-[State 2022, Go Back]
-type = VelSet
-trigger1 = Anim = 2105
-X = -1.2
+trigger1 = NumHelper(2105)
 
 
-[State -3: AfterImageTime]
-type = AfterImageTime
-trigger1 = Anim = 2105
-time = 5
-ignorehitpause = 1
-
-[State 1020, Afterimage]
-type = AfterImage
-trigger1 = Anim = 2105
-trigger1 = AnimElemTime(1) = 1
-length = 10
-palbright = 0, 0, 0
-palcontrast = 128, 128, 256
-paladd = 0,0,0
-palmul = 1, 1, 1
-timegap  = 2
-framegap = 2
-trans = add1
-time = 2; only 2 ticks!!!
-ignorehitpause = 1
-
-[State 2022, Go Back]
+[State 2022, Bound]
 type = ChangeState
-trigger1 = Anim = 2105
-trigger1 = !AnimTime
+trigger1 = !NumTarget
 value = 0
 ctrl = 1
 
-; Midnight Blackness - Hit
+; Freeze Completion - Hit
+[Statedef 2102]
+type = A
+movetype = H
+physics = N
+sprpriority = 1
+
+[State 2023, Anim]
+type = ChangeAnim2
+trigger1 = !Time 
+value = 2102
+ignorehitpause = 1
+
+[State 802, Exit]
+type = SelfState
+trigger1 = !gethitvar(isbound)
+value = 5050
+
+; Flash BG
+[Statedef 2107]
+type = S
+physics = N
+movetype = I
+anim = 7300
+
+[State 7000, Pal Down]
+type = BGPalFX
+trigger1 = 1
+time = 1
+add = 256 - 8 * Time, 256 - 8 * Time, 256 - 8 * Time
+
+
+[State 7000, End]
+type = DestroySelf
+trigger1 = Time >= 32
+
+; Chilly BG
+[Statedef 2108]
+type = S
+physics = N
+movetype = I
+anim = 7300
+
+[State 7000, Pal Down]
+type = BGPalFX
+trigger1 = time <= 16
+time = 1
+add = 0, 4 * Time, 8 * Time
+color = 256 - 16 * Time
+
+[State 7000, Pal Static]
+type = BGPalFX
+trigger1 = (time = [16, 64]); && root, var(10) = 5
+time = 1
+add = 0, 64, 128
+color = 0
+
+[State 7000, Pal Up]
+type = BGPalFX
+trigger1 = time >= 64
+time = 1
+add = 0, 64 - 4 * (Time - 64), 128 - 8 * (Time - 64)
+color = 16 * (Time - 64)
+
+[State 7000, End]
+type = DestroySelf
+trigger1 = Time >= 80
+
+
+;Ice
+[Statedef 2109]
+type    = S
+movetype= I
+physics = N
+poweradd= 0
+ctrl = 0
+sprpriority = 2
+juggle = 14
+anim = 7103
+
+[State 2013, Shade]
+type = PalFX
+trigger1 = 1
+time = 1
+color = 0
+add = 0, 0, 128
+mul = 256, 256, 256
+
+[State 2013, Shade]
+type = Trans
+trigger1 = AnimElemTime(1) = [0, 16]
+trans = addalpha
+alpha = 16 * AnimElemTime(1), 256 - 8 * AnimElemTime(1)
+
+[State 2013, Shade]
+type = Trans
+trigger1 = AnimElemTime(1) > 16
+trans = addalpha
+alpha = 256, 128
+
+[State 2013, End]
+type = VarSet
+trigger1 = !Time
+V = 0
+value = 0
+
+[State 2013, End]
+type = VarAdd
+trigger1 = Parent, NumHelper(2105)
+trigger2 = Var(0) > 0
+V = 0
+value = 1
+
+
+[State 2013, Shade]
+type = Trans
+trigger1 = Var(0) > 0
+trans = addalpha
+alpha = 256 - 16 * Var(0) , 128 + 8 * Var(0) 
+
+[State 2013, End]
+type = DestroySelf
+trigger1 = Var(0) > 16
+trigger2 = Root, StateNo != 2101
+
+
+; Freeze Completion - End
 [Statedef 2103]
 type = A
 movetype = H
 physics = N
 sprpriority = 1
 
-[State 2022, FX]
-type = PalFX
-trigger1 = !Time
-time = 9999
-add = -64, -64, -64
-sinadd = -64, -64, -64, 128
-mul = 256, 256, 256
 
-[State 2023, Anim]
-type = ChangeAnim2
-trigger1 = !Time 
-value = 2103
-ignorehitpause = 1
+[State 802, Exit]
+type = VelSet
+trigger1 = Time > 5
+trigger1 = !gethitvar(isbound)
+X = - 3
+Y = - 5
 
 [State 802, Exit]
 type = SelfState
+trigger1 = Time > 5
 trigger1 = !gethitvar(isbound)
 value = 5050
 
-; Midnight Blackness - Transformation
-[Statedef 2104]
-type = A
-movetype = H
-physics = N
-sprpriority = 1
-
-[State 2022, NoPalFX]
-type = PalFX
-trigger1 = !Time
-time = 1
-add = 0, 0, 0
-sinadd = 0, 0, 0, 16
-mul = 256, 256, 256
-
-[State 2023, Anim]
-type = ChangeAnim
-triggerall = !Time 
-trigger1 = SelfAnimExist(12000) && SelfAnimExist(12001) 
-value = 12000
-ignorehitpause = 1
-
-[State 2023, Anim]
-type = AssertSpecial
-trigger1 = !SelfAnimExist(12000) || !SelfAnimExist(12001) 
-flag = Invisible
-flag2 = NoShadow
-ignorehitpause = 1
-
-[State 802, Exit]
-type = SelfState
-trigger1 = !gethitvar(isbound)
-value = 5050
-
-; Midnight Blackness - Drained
-[Statedef 2105]
-type = A
-movetype = H
-physics = N
-sprpriority = 1
-
-[State 2022, FX]
-type = PalFX
-trigger1 = !Time
-time = 60
-add = -32, -32, -32
-sinadd = -32, -32, -32, 32
-mul = 256, 256, 256
-
-[State 2023, Anim]
-type = ChangeAnim
-triggerall = !Time 
-trigger1 = SelfAnimExist(12000) && SelfAnimExist(12001) 
-value = 12001
-ignorehitpause = 1
-
-[State 2023, Anim]
-type = AssertSpecial
-trigger1 = !SelfAnimExist(12000) || !SelfAnimExist(12001) 
-flag = Invisible
-flag2 = NoShadow
-ignorehitpause = 1
-
-[State 802, Exit]
-type = SelfState
-trigger1 = !gethitvar(isbound)
-value = 5050
-
-; Midnight Blackness - Replacement Helper
-[Statedef 2108]
-type = A
-movetype = I
-physics = N
-anim = 7261
-sprpriority = 1
-
-[State 2108, Change]
-type = ChangeState
-trigger1 = Parent, Anim = 2104
-trigger1 = Parent, AnimElem = 3
-value = 2109
-
-[State 802, Exit]
-type = DestroySelf
-trigger1 = Parent, StateNo != 2102
-trigger2 = !(Parent, NumTarget)
-
-; Midnight Blackness - Replacement Helper, Drained
-[Statedef 2109]
-type = A
-movetype = I
-physics = N
-anim = 7262
-sprpriority = 1
-
-[State 2108, Elevation]
-type = PosAdd
-trigger1 = !Time
-Y = - 30
-
-[State 2022, FX]
-type = PalFX
-trigger1 = !Time
-time = 60
-add = -64, -64, -64
-sinadd = -64, -64, -64, 128
-mul = 256, 256, 256
-
-[State 2108, Shake]
-type = PosAdd
-trigger1 = 1
-X = 0.5*Sin(2*Time)
-
-[State 802, Exit]
-type = DestroySelf
-trigger1 = Parent, StateNo != 2102
-trigger2 = !(Parent, NumTarget)
-
-; Transformation Clouds
+;Dancer
 [Statedef 2110]
-type = A
-movetype = I
+type    = S
+movetype= I
 physics = N
+poweradd= 0
 ctrl = 0
-velset = 0,0
-sprpriority = 3
+sprpriority = 2
+juggle = 14
+anim = 7250
 
-[State 2110, Anim]
-type = ChangeAnim
-trigger1 = !Time
-value = 7263 + (Random % 2)
-
-[State 2110, Scale]
-type = AngleDraw
+[State 2013, Shade]
+type = PalFX
 trigger1 = 1
-scale = 1 + Time/10.0, 1 + Time/10.0
+time = 1
+color = 0
+add = 0, 64, 128
+mul = 256, 256, 256
 
-[State 2110, Scale]
+[State 2013, Shade]
 type = Trans
-trigger1 = 1
+trigger1 = AnimElemTime(1) = [0, 16]
 trans = addalpha
-alpha = 256 - 16 * (Time), 16 * (Time)
+alpha = 16 * AnimElemTime(1), 256 - 16 * AnimElemTime(1)
 
-[State 2110, DestroySelf]
+[State 2013, Shade]
+type = EnvShake
+trigger1 = AnimElem = 2
+ampl = 4
+time = 6
+freq = 120
+
+[State 2013, Shade]
+type = Trans
+trigger1 = AnimElemTime(1) > 16
+trans = addalpha
+alpha = 256, 0
+
+[State 2013, Shade]
+type = Trans
+trigger1 = AnimElemTime(7) = [0, 16]
+trans = addalpha
+alpha = 256 - 16 * AnimElemTime(7), 16 * AnimElemTime(7)
+
+[State 2013, End]
 type = DestroySelf
-trigger1 = Time > 16
+trigger1 = !AnimTime
+trigger2 = Root, StateNo != 2101
 
-;Magic Wall Activation
+;Leene
+[Statedef 2113]
+type    = S
+movetype= I
+physics = N
+poweradd= 0
+ctrl = 0
+sprpriority = 2
+juggle = 14
+anim = 7253
+velset = 5, 0
+
+[State 2013, Shade]
+type = EnvShake
+trigger1 = !Time
+ampl = 4
+time = 6
+freq = 120
+
+[State 2013, Shade]
+type = PalFX
+trigger1 = 1
+time = 1
+color = 0
+add = 0, 64, 128
+mul = 256, 256, 256
+
+[State 2013, Shade]
+type = Trans
+trigger1 = Time = [0, 8]
+trans = addalpha
+alpha = 32 * Time, 256 - 32* Time
+
+[State 2013, Shade]
+type = Trans
+trigger1 = Time = [8, 24]
+trans = addalpha
+alpha = 256 - 16 * (Time - 8), 16 * (Time - 8)
+
+[State 2013, End]
+type = DestroySelf
+trigger1 = Time > 24
+trigger2 = Root, StateNo != 2101
+
+;Schala
+[Statedef 2115]
+type    = S
+movetype= I
+physics = N
+poweradd= 0
+ctrl = 0
+sprpriority = 2
+juggle = 14
+anim = 7255
+
+[State 200, Explod]
+type = Explod
+trigger1 = Time % 23 = 7
+trigger2 = Time % 23 = 18
+anim = 7019
+ID = 200
+pos = 50, -10
+postype = p1  ;p2,front,back,left,right
+facing = 1 - 2 * (Random  % 2)
+vfacing = 1
+bindtime = -1
+vel = 0,0
+accel = 0,0
+random = 10,10
+removetime = -2
+scale = 1,1
+sprpriority = 2
+ontop = 0
+shadow = 0,0,0
+ownpal = 1
+removeongethit = 1
+ignorehitpause = 1
+
+
+[State 2013, Shade]
+type = PalFX
+trigger1 = 1
+time = 1
+color = 0
+add = 0, 64, 128
+mul = 256, 256, 256
+
+[State 2013, Shade]
+type = EnvShake
+trigger1 = Time % 23 = 7
+trigger2 = Time % 23 = 18
+ampl = 4
+time = 6
+freq = 120
+
+[State 2013, Shade]
+type = Trans
+trigger1 = Time = [0, 16]
+trans = addalpha
+alpha = 16 * Time, 256 - 16 * Time
+
+[State 2013, Shade]
+type = Trans
+trigger1 = Time > 16
+trans = addalpha
+alpha = 256, 0
+
+[State 2013, Shade]
+type = Trans
+trigger1 = Time = [100, 116]
+trans = addalpha
+alpha = 256 - 16 * (Time - 100), 16 * (Time - 100)
+
+[State 2013, End]
+type = DestroySelf
+trigger1 = Time > 116
+trigger2 = Root, StateNo != 2101
+
+;Haste Activation
 [Statedef 2200]
 type = S
 movetype = I
@@ -1500,7 +1518,6 @@ ctrl = 0
 velset = 0,0
 sprpriority = 1
 facep2 = 1
-
 
 [State 200, Explod]
 type = Explod

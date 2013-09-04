@@ -306,9 +306,8 @@ trigger1 = !AnimTime
 value = 0
 ctrl = 1
 
-
 ;---------------------------------------------------------------------------
-;Ice Riser
+; Provoke
 [Statedef 1020]
 type    = S
 movetype= A
@@ -316,6 +315,113 @@ physics = S
 juggle  = 3
 ctrl = 0
 anim = 1020
+sprpriority = 1
+facep2 = 1
+
+[State 1010, Strength]
+type = VarSet
+trigger1 = !Time
+var(0) = IfElse(command = "dfc", 2, IfElse(command = "dfb", 1, 0))
+
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = AnimElem = 3
+value = S7000,1
+ignorehitpause = 1
+
+[State Reversal]
+type = reversaldef
+trigger1 = animelem = 2
+reversal.attr = SCA, AA
+p1stateno = 1021
+pausetime = 4, 12
+sparkno = -1
+hitsound = s6, 5
+numhits = 0
+
+[State HitOverride]
+type = HitOverride
+trigger1 = animelemtime(2) >= 0 && animelemtime(5) < 0
+slot = 1
+time = 1
+stateno = 1021
+attr = SCA, NP, SP, HP
+ignorehitpause = 1
+
+[State 1040, End]
+type = ChangeState
+trigger1 = !AnimTime
+value = 0
+ctrl = 1
+
+; Provoke Success
+[Statedef 1021]
+type    = S
+movetype= A
+physics = S
+juggle  = 3
+ctrl = 0
+anim = 1021
+sprpriority = 1
+facep2 = 1
+
+[State NHB]
+type = NotHitBy
+trigger1 = 1
+value = SCA
+time = 1
+ignorehitpause = 1
+
+[State 2]
+type = HitDef
+trigger1 = !Time
+attr = S, SA
+hitflag = MAFP
+animtype = Hard
+damage = 50, 10
+getpower = 0, 0
+guardflag = MA
+sparkno = -1
+pausetime = 0, 60
+guardsound = S0, 100
+ground.type = Low
+air.type = Low
+ground.slidetime = 35
+ground.hittime = 35
+ground.velocity = -1, -3
+air.velocity = -1, -3
+fall = 1
+air.fall = 1
+fall.recover = 0
+forcestand = 1
+ignorehitpause = 1
+
+[State 1021, Shade]
+type = PalFX
+trigger1 = 1
+time = 1
+color = 16 * Time
+add = 0, 64 - 4 * Time, 128 - 8 * Time
+mul = 256, 256, 256
+ignorehitpause = 1
+
+[State 1040, End]
+type = ChangeState
+trigger1 = Time >= 16
+value = 0
+ctrl = 1
+
+
+
+;---------------------------------------------------------------------------
+;Ice Riser
+[Statedef 1025]
+type    = S
+movetype= A
+physics = S
+juggle  = 3
+ctrl = 0
+anim = 1025
 sprpriority = 1
 poweradd = IfElse(Var(21) > 0, 0, 72)
 facep2 = 1
@@ -335,8 +441,8 @@ ignorehitpause = 1
 type = Helper
 trigger1 = AnimElem = 6
 name = "Ice Riser"
-ID = 1020
-stateno = 1021
+ID = 1025
+stateno = 1026
 pos = 20 + 30 * var(0), 0
 postype = p1    ;p2,front,back,left,right
 facing = 1
@@ -351,7 +457,7 @@ value = 0
 ctrl = 1
 
 ; Ice Spike
-[Statedef 1021]
+[Statedef 1026]
 type    = S
 movetype= A
 physics = N
@@ -370,7 +476,7 @@ type = HitOverride
 trigger1 = 1
 time = -1
 attr = SCA, AA, AP
-stateno = 1022
+stateno = 1027
 ignorehitpause = 1
 
 [State 1021, HB]
@@ -437,7 +543,7 @@ trigger1 = !AnimTime
 ignorehitpause = 1
 
 ; Ice Spike
-[Statedef 1022]
+[Statedef 1027]
 type    = S
 movetype= A
 physics = N
