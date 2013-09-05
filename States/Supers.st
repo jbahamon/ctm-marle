@@ -162,8 +162,8 @@ persistent = 0
 
 [State 2002, Bind]
 type = TargetBind
-trigger1 = 1
-pos = Facing * (FVar(0) - Pos X), FVar(1) - Pos Y
+trigger1 = NumTarget
+pos = Floor(Facing * (FVar(0) - Pos X)), Floor(FVar(1) - Pos Y)
 
 [State 2002, Soldier]
 type = Helper
@@ -174,7 +174,7 @@ trigger1 = (Var(2) := Var(2) + 1)
 name = "Guardia Soldier"
 ID = 2000
 stateno = 2005
-pos = IfElse(Var(2) % 2 > 0, (- ScreenPos X - 10)*Facing, (GameWidth - ScreenPos X + 10)*Facing)
+pos = Floor(IfElse(Var(2) % 2 > 0, (- ScreenPos X - 10)*Facing, (GameWidth - ScreenPos X + 10)*Facing)), 0
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
@@ -187,7 +187,7 @@ trigger1 = Time % 3 = 0
 ID = 2006
 stateno = 2006
 name = "Cloud"
-pos = Facing * (FVar(0) - Pos X) + Random % 70 - 35, FVar(1) - Pos Y - Random % 30 + 10
+pos = Floor(Facing * (FVar(0) - Pos X) + Random % 70 - 35), Floor(FVar(1) - Pos Y - Random % 30 + 10)
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
@@ -245,6 +245,7 @@ type = A
 movetype = H
 physics = N
 sprpriority = 1
+velset = 0, 0
 
 [State 2023, Anim]
 type = ChangeAnim2
@@ -277,6 +278,7 @@ movetype = H
 physics = N
 ctrl = 0
 sprpriority = 0
+velset = 0, 0
 
 [State 2024, Anim]
 type = ChangeAnim2
@@ -1084,7 +1086,7 @@ persistent = 0
 [State 2002, Custom]
 type = Helper
 triggerall = NumTarget
-trigger1 = Time = 80
+trigger1 = Time = 100
 ID = 2101
 stateno = 2113
 name = "Leene"
@@ -1099,20 +1101,20 @@ persistent = 0
 
 [State 2002, Bind]
 type = VarAdd
-trigger1 = Time = [90, 120]
+trigger1 = Time = [100, 120]
 FV = 0
-value = 0.4 
+value = 0.3
 
 [State 2002, Bind]
 type = VarAdd
-trigger1 = Time = [90, 120]
+trigger1 = Time = [100, 120]
 FV = 1
-value = - 6 + (Time - 90) * 0.33
+value = - 4 + (Time - 100) * 0.3
 
 [State 2002, Custom]
 type = Helper
 triggerall = NumTarget
-trigger1 = Time = 90
+trigger1 = Time = 80
 ID = 2102
 stateno = 2108
 name = "Ice BG"

@@ -605,7 +605,7 @@ trigger1 = ctrl
 type = ChangeState
 value = 2100
 trigger1 = Command = "x";"qcfhcba" || Command = "qcfhcbb" || Command = "qcfhcbc"
-;triggerall = Var(21) > 0
+triggerall = Var(21) > 0
 ;trigger1 = statetype != A
 ;trigger1 = ctrl || ((stateno = [200, 299]) && time <= 10)
 ;---------------------------------------------------------------------------
@@ -646,7 +646,7 @@ trigger3 = ( StateNo = [400,499] ) && MoveHit
 ;===========================================================================
 ; Special Moves
 ;===========================================================================
-[State -1, Ice Riser]
+[State -1, Provoke]
 type = ChangeState
 value = 1020
 triggerall = !NumHelper(1020)
@@ -669,13 +669,21 @@ triggerall = command = "qcba" || command = "qcbb" || command = "qcbc"
 triggerall = statetype != A 
 trigger1 = ctrl
 ;---------------------------------------------------------------------------
-[State -1, Elemental Magic]
+[State -1, Ice]
 type = ChangeState
 value = 1000
 triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
 triggerall = roundstate = 2 && statetype != A && !NumHelper(1000)
 trigger1 = ctrl
 trigger2 = (stateno = [200, 299]) && MoveContact
+;---------------------------------------------------------------------------
+[State -1, Elemental Magic]
+type = ChangeState
+value = 1040
+triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
+triggerall = roundstate = 2 && statetype = A && !NumHelper(1040)
+trigger1 = ctrl
+trigger2 = (stateno = [600, 699]) && MoveContact
 
 
 ;===========================================================================
@@ -688,7 +696,7 @@ trigger1 = (command = "recovery" || command = "2p") && (command = "holdfwd" || c
 trigger1 = roundstate = 2 && ctrl && statetype = S && stateno != 100
 value = 800
 
-[State -1, Magic Wall]
+[State -1, Haste]
 type = ChangeState
 value = 2200
 triggerall = Command = "a+c" && !(command = "holdfwd" || command = "holdback" || command = "holdup" || command = "holddown")
