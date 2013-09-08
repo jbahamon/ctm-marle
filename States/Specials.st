@@ -997,7 +997,7 @@ persistent = 0
 type = ChangeState
 trigger1 = Vel Y > 0
 trigger1 = pos y > -vel y
-value = 621
+value = 1043
 
 ; Ice Spike
 [Statedef 1041]
@@ -1069,7 +1069,7 @@ ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = VelAdd
-trigger1 = Time > 27
+trigger1 = Time > 23
 Y = 0.3
 ignorehitpause = 1
 
@@ -1164,3 +1164,26 @@ ignorehitpause = 1
 type = DestroySelf
 trigger1 = !AnimTime
 ignorehitpause = 1
+
+
+;Ice Spike Landing
+[Statedef 1043]
+type    = S
+movetype= I
+physics = S
+ctrl = 0
+anim = 47
+sprpriority = 1
+velset = 0,0
+
+[State 611, Pos]
+type = PosSet
+trigger1 = !Time
+Y = 0
+
+[State 611, End]
+type = ChangeState
+trigger1 = Time > 7
+value = 0
+ctrl = 1
+

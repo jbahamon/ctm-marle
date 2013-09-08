@@ -52,7 +52,7 @@ type = RemapPal
 trigger1 = !Time
 trigger1 = PrevStateNo != 11778
 source = 1, 1
-dest = 2, (Parent, palno)
+dest = 2, 1;(Parent, palno)
 
 [State 6965]
 Type=ChangeAnim
