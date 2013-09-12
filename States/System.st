@@ -337,44 +337,9 @@ movetype = I
 physics = S
 sprpriority = 1
 
-[State 200, Explod]
-type = RemoveExplod
-trigger1 = !Time
-ID = 200
-ignorehitpause = 1
-
-[State 195, Switch Element]
-type = VarSet
-trigger1 = !Time
-trigger1 = !Var(21)
-var(22) = (Var(22) + 1) % 3
-
-[State 200, Explod]
-type = Explod
-trigger1 = !Time
-trigger1 = !Var(21)
-anim = 7020 + Var(22)
-ID = 200
-pos = 0, -40
-postype = p1  ;p2,front,back,left,right
-facing = 1
-vfacing = 1
-bindtime = -1
-vel = 0,0
-accel = 0,0
-random = 0,0
-removetime = -2
-scale = 1,1
-sprpriority = 2
-ontop = 0
-shadow = 0,0,0
-ownpal = 1
-removeongethit = 1
-ignorehitpause = 1
-
 [State 195, 2]
 type = ChangeState
-trigger1 = AnimTime = 0
+trigger1 = Time > 38
 value = 0
 ctrl = 1
 

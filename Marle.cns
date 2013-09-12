@@ -320,12 +320,6 @@ trigger1= !(target,hitshakeover) && (target, hitfall) && (target, pos y>0)
 pos= ceil(p2dist x), ceil(-pos y); keeps P2 at the same horizontal distance, but resets his Y position
 ignorehitpause= 1
 
-[State -3, Dampener]
-Type = AttackMulSet
-Trigger1 = 1
-value = fvar(39)
-ignorehitpause = 1
-
 [State -2]
 type = Helper
 triggerall = !NumHelper(11777) ; If the helper doesn't exists yet, make one
@@ -337,7 +331,7 @@ ID = 11777
 StateNo = 11777
 PauseMoveTime = 9999999
 SuperMoveTime = 9999999
-Name = "Magic Wall"
+Name = "Haste"
 
 [State -3, EndProtect]
 type = VarSet

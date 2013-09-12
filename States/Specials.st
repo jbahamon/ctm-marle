@@ -297,7 +297,7 @@ persistent = 0
 [State 1040, End]
 type = LifeAdd
 trigger1 = AnimElemNo(0) = 4
-value = 70
+value = IfElse((Life + 70) <= Const(data.life), 70, Const(data.life) - Life)
 persistent = 0
 
 [State 1040, End]
