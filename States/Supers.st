@@ -136,7 +136,7 @@ value = -4 + Time * 0.43
 [State 2002, Bind]
 type = TargetState
 trigger1 = Target, StateNo = 2003
-trigger1 = FVar(1) >= 0
+trigger1 = FVar(1) >= Pos Y
 value = 2004
 
 [State 2002, Bind]
