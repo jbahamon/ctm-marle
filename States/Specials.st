@@ -86,6 +86,13 @@ trigger1 = !Time
 X = 0.8 + 0.4 * Var(0)
 persistent = 0
 
+[State 200, Dampen]
+Type=ParentVarset
+Trigger1 = MoveHit
+fvar(39) = parent, fvar(39)*0.86
+persistent = 0
+ignorehitpause = 1
+
 [State 1010, hitdef]
 type = HitDef
 triggerall = !MoveContact
@@ -93,7 +100,7 @@ triggerall = !MoveReversed
 trigger1 = Time > 0
 priority = 6, Hit
 attr = A,SP
-damage = 60, 4
+damage = floor(50* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
 guardflag = MA
@@ -139,7 +146,7 @@ removeongethit = 0
 
 [State 1021, ChangeState]
 type = DestroySelf
-trigger1 = Time > 100
+trigger1 = Time > 120
 ignorehitpause = 1
 
 [State 1021, ChangeState]
@@ -480,7 +487,7 @@ trigger1 = !Time
 attr = S, SA
 hitflag = MAFP
 animtype = Hard
-damage = 50, 10
+damage = 45, 10
 getpower = 0, 0
 guardflag = MA
 sparkno = -1
@@ -589,7 +596,7 @@ triggerall = !MoveReversed
 trigger1 = Time > 0
 priority = 6, Hit
 attr = A,SP
-damage = 60, 4
+damage = 50* parent, fvar(39), 4
 animtype = Hard
 hitflag = MAF
 guardflag = MA
@@ -613,6 +620,12 @@ envshake.freq = 120
 envshake.ampl = 2
 getpower = IfElse(Parent, Var(21) > 0, 0, 20)
 
+[State 200, Dampen]
+Type=ParentVarset
+Trigger1 = MoveHit
+fvar(39) = parent, fvar(39)*0.86
+persistent = 0
+ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = AngleDraw
@@ -1036,7 +1049,7 @@ triggerall = !MoveReversed
 trigger1 = Time > 16
 priority = 6, Hit
 attr = A,SP
-damage = 60, 4
+damage = Floor(60* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
 guardflag = MA
@@ -1059,6 +1072,13 @@ envshake.time = 8
 envshake.freq = 120
 envshake.ampl = 2
 getpower = IfElse(Parent, Var(21) > 0, 0, 20)
+
+[State 200, Dampen]
+Type=ParentVarset
+Trigger1 = MoveHit
+fvar(39) = parent, fvar(39)*0.86
+persistent = 0
+ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = Trans

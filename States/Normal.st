@@ -17,6 +17,13 @@ poweradd = 0                     ;Power to add (Def: 0)
 sprpriority = 1                  ;Set p1's sprite layering priority to 2 (in front)
 facep2 = 1
 
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.95
+persistent = 0
+ignorehitpause = 1
+
 [State 200, Explod]
 type = Explod
 trigger1 = AnimElem = 2
@@ -97,6 +104,13 @@ anim = 210
 sprpriority = 1
 facep2 = 1
 
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.85
+persistent = 0
+ignorehitpause = 1
+
 [State 210, 1]
 type = PlaySnd
 trigger1 = AnimElem = 2
@@ -171,6 +185,13 @@ anim = 220
 sprpriority = 1
 facep2 = 1
 
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.78
+persistent = 0
+ignorehitpause = 1
+
 [State 220, 1]
 type = PlaySnd
 trigger1 = AnimElem = 3
@@ -235,6 +256,13 @@ facep2 = 1
 type = PlaySnd
 trigger1 = AnimElem = 2
 value = S7010, 1
+
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.95
+persistent = 0
+ignorehitpause = 1
 
 [State 200, Explod]
 type = Explod
@@ -304,6 +332,13 @@ anim = 410
 sprpriority = 1
 facep2 = 1
 
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.85
+persistent = 0
+ignorehitpause = 1
+
 [State 410, 1]
 type = PlaySnd
 trigger1 = AnimElem = 3
@@ -367,6 +402,14 @@ air.cornerpush.veloff = 0
 type = NotHitBy
 trigger1 = 1
 value = , AT
+ignorehitpause = 1
+
+
+[State 200, Dampen]
+Type=ParentVarset
+Trigger1 = MoveHit
+fvar(39) = Parent,fvar(39)*0.85
+persistent = 0
 ignorehitpause = 1
 
 [State 410,Got Hit]
@@ -443,6 +486,13 @@ anim = 420
 sprpriority = 1
 facep2 = 1
 
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.78
+persistent = 0
+ignorehitpause = 1
+
 [State 420, 1]
 type = PlaySnd
 trigger1 = AnimElem = 4
@@ -502,6 +552,13 @@ ctrl = 0
 anim = 600
 sprpriority = 1
 facep2 = 1
+
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.95
+persistent = 0
+ignorehitpause = 1
 
 [State 600, 1]
 type = PlaySnd
@@ -590,6 +647,13 @@ ctrl = 0
 anim = 610
 sprpriority = 1
 facep2 = 1
+
+[State 200, Dampen]
+Type=Varset
+Trigger1 = MoveHit
+fvar(39) = fvar(39)*0.85
+persistent = 0
+ignorehitpause = 1
 
 [State 610, Boom]
 type = VelSet
@@ -798,6 +862,13 @@ movetype = A
 velset = 0, 0
 sprpriority = 2
 anim = 7015
+
+[State 200, Dampen]
+Type=ParentVarset
+Trigger1 = MoveHit
+fvar(39) = parent, fvar(39)*0.78
+persistent = 0
+ignorehitpause = 1
 
 [State 611, Pos]
 type = PosSet

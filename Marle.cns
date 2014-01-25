@@ -136,12 +136,12 @@ sprpriority = 0
 [State 20, 1]
 type = VelSet
 trigger1 = command = "holdfwd"
-x = const(velocity.walk.fwd.x) * IfElse(Var(21) > 0, 2, 1)
+x = const(velocity.walk.fwd.x) * IfElse(Var(21) > 0, 1.5, 1)
 
 [State 20, 2]
 type = VelSet
 trigger1 = command = "holdback"
-x = const(velocity.walk.back.x) * IfElse(Var(21) > 0, 2, 1)
+x = const(velocity.walk.back.x) * IfElse(Var(21) > 0, 1.5, 1)
 
 [State 20, 3]
 type = ChangeAnim
@@ -184,7 +184,7 @@ sysvar(1) = -1
 [State 40, 4]
 type = VelSet
 trigger1 = AnimTime = 0
-x = ifelse(sysvar(1)=0, const(velocity.jump.neu.x), ifelse(sysvar(1)=1, const(velocity.jump.fwd.x), const(velocity.jump.back.x))) * IfElse(Var(21) > 0, 2, 1)
+x = ifelse(sysvar(1)=0, const(velocity.jump.neu.x), ifelse(sysvar(1)=1, const(velocity.jump.fwd.x), const(velocity.jump.back.x))) * IfElse(Var(21) > 0, 1.5, 1)
 y = const(velocity.jump.y)
 
 [State 40, 5]
@@ -192,7 +192,7 @@ type = VelSet
 trigger1 = AnimTime = 0
 trigger1 = prevstateno = 100 ;RUN_FWD
 trigger1 = sysvar(1) = 1
-x = const(velocity.runjump.fwd.x) * IfElse(Var(21) > 0, 2, 1)
+x = const(velocity.runjump.fwd.x) * IfElse(Var(21) > 0, 1.5, 1)
 
 [State 40, 6]
 type = ChangeState
@@ -236,7 +236,7 @@ sysvar(1) = -1
 [State 45, 6]
 type = VelSet
 trigger1 = Time = 2
-x = ifelse(sysvar(1)=0, const(velocity.airjump.neu.x), ifelse(sysvar(1)=1, const(velocity.airjump.fwd.x), const(velocity.airjump.back.x)))* IfElse(Var(21) > 0, 2, 1)
+x = ifelse(sysvar(1)=0, const(velocity.airjump.neu.x), ifelse(sysvar(1)=1, const(velocity.airjump.fwd.x), const(velocity.airjump.back.x)))* IfElse(Var(21) > 0, 1.5, 1)
 y = const(velocity.airjump.y)
 
 [State 45, 7]
@@ -256,7 +256,7 @@ sprpriority = 1
 [State 100, 1]
 type = VelSet
 trigger1 = 1
-x = const(velocity.run.fwd.x)* IfElse(Var(21) > 0, 2, 1)
+x = const(velocity.run.fwd.x)* IfElse(Var(21) > 0, 1.5, 1)
 
 [State 100, 2] ;Prevent run from canceling into walk
 type = AssertSpecial
@@ -285,7 +285,7 @@ sprpriority = 1
 [State 105, 1]
 type = VelSet
 trigger1 = Time = 0
-x = const(velocity.run.back.x)* IfElse(Var(21) > 0, 2, 1)
+x = const(velocity.run.back.x)* IfElse(Var(21) > 0, 1.5, 1)
 y = const(velocity.run.back.y)
 
 [State 105, 2]
@@ -308,8 +308,26 @@ value = 106
 ; States that are executed when in self's state file (use statedef -3)
 ;---------------------------------------------------------------------------
 
+[Statedef -2]
+
+[State -2, Dampener]
+Type=VarSet
+Trigger1=Roundstate<2
+Trigger2=P2Stateno=[120,160]
+Trigger3=enemynear,ctrl
+Trigger4=P2StateType!=A
+Trigger4=P2MoveType!=H
+fvar(39)=1
+ignorehitpause=1
+
 [Statedef -3]
 
+
+[State -3, Dampener]
+Type = AttackMulSet
+Trigger1 = 1
+value = fvar(39)
+ignorehitpause = 1
 
 [State -3, Prevent Undergound Juggles]
 type= targetbind
@@ -350,7 +368,7 @@ ignorehitpause = 1
 type = ChangeAnim
 triggerall = (Var(21) > 0) && (RoundState = 2) && (MoveType != H) && StateNo != [2100, 2102]
 trigger1 = AnimElemTime(AnimElemNo(0) + 1) < 0
-trigger1 = AnimElemTime(AnimElemNo(0)) > floor ((AnimElemTime(AnimElemNo(0)) - AnimElemTime(AnimElemNo(0) + 1))/2)
+trigger1 = AnimElemTime(AnimElemNo(0)) > floor ((AnimElemTime(AnimElemNo(0)) - AnimElemTime(AnimElemNo(0) + 1))/2.0)
 ignorehitpause = 1
 value = Anim
 elem = AnimElemNo(0) + 1
@@ -360,12 +378,6 @@ type = VarSet
 trigger1 = (Roundstate = 3)
 v = 21
 value = 0
-
-[State -2] ; Immune to projectiles
-type = NotHitBy
-trigger1 = Var(21) > 0
-value = , AP
-
 
 ;This controller plays a sound everytime the character lands from a jump, or
 ;from his back-dash.

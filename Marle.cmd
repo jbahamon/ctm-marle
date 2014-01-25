@@ -673,15 +673,17 @@ trigger1 = ctrl
 type = ChangeState
 value = 1000
 triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
-triggerall = roundstate = 2 && statetype != A && !NumHelper(1000)
-trigger1 = ctrl
+triggerall = roundstate = 2 && statetype != A 
+triggerall = !NumHelper(1000) || (NumHelper(1000) = 1 && Var(21))
+trigger1 = ctrl 
 trigger2 = (stateno = [200, 299]) && MoveContact
 ;---------------------------------------------------------------------------
-[State -1, Elemental Magic]
+[State -1, Ice Spike]
 type = ChangeState
 value = 1040
 triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
-triggerall = roundstate = 2 && statetype = A && !NumHelper(1040)
+triggerall = roundstate = 2 && statetype = A 
+triggerall = !NumHelper(1040) || (NumHelper(1040) = 1 && Var(21))
 trigger1 = ctrl
 trigger2 = (stateno = [600, 699]) && MoveContact
 

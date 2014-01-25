@@ -123,24 +123,28 @@ value = Target, Pos Y
 
 [State 2002, Bind]
 type = VarAdd
+trigger1 = NumTarget
 trigger1 = Target, StateNo = 2003
 FV = 0
 value = Facing * 2
 
 [State 2002, Bind]
 type = VarAdd
+trigger1 = NumTarget
 trigger1 = Target, StateNo = 2003
 FV = 1
 value = -4 + Time * 0.43
 
 [State 2002, Bind]
 type = TargetState
+trigger1 = NumTarget
 trigger1 = Target, StateNo = 2003
 trigger1 = FVar(1) >= Pos Y
 value = 2004
 
 [State 2002, Bind]
 type = VarSet
+trigger1 = NumTarget
 trigger1 = Target, StateNo = 2004
 FV = 1
 value = 0
@@ -148,6 +152,7 @@ persistent = 0
 
 [State 2002, Bind]
 type = EnvShake
+trigger1 = NumTarget
 trigger1 = Target, StateNo = 2004
 freq = 120
 ampl = 6
@@ -156,6 +161,7 @@ persistent = 0
 
 [State 2002, Bind]
 type = ChangeAnim
+trigger1 = NumTarget
 trigger1 = Target, StateNo = 2004
 value = 2002
 persistent = 0
@@ -222,6 +228,7 @@ value = 1
 
 [State 2002, Time]
 type = TargetLifeAdd
+trigger1 = NumTarget
 trigger1 = Var(0) = 6
 trigger1 = Var(1) < 80
 trigger1 = Var(1) % 6 = 0
@@ -246,6 +253,13 @@ movetype = H
 physics = N
 sprpriority = 1
 velset = 0, 0
+
+[State 2023, Anim]
+type = ScreenBound 
+trigger1 = 1
+value = 0
+movecamera = 0, 0
+ignorehitpause = 1
 
 [State 2023, Anim]
 type = ChangeAnim2
@@ -280,6 +294,14 @@ ctrl = 0
 sprpriority = 0
 velset = 0, 0
 
+
+[State 2023, Anim]
+type = ScreenBound 
+trigger1 = 1
+value = 0
+movecamera = 0, 0
+ignorehitpause = 1
+
 [State 2024, Anim]
 type = ChangeAnim2
 trigger1 = !Time
@@ -312,6 +334,13 @@ trigger2 = ScreenPos X < 0
 trigger2 = Facing < 0
 
 [State 2013, Turn]
+type = PosAdd
+triggerall = !Time
+trigger1 = Abs(Pos X - Parent, FVar(0)) < 80
+X = IfElse(Facing < 0, 80 - Parent, FVar(0), Parent, FVar(0) - 80)
+persistent = 0
+
+[State 2013, Turn]
 type = VelSet
 trigger1 = !Time
 X = 3
@@ -331,19 +360,21 @@ persistent = 0
 [State 2013, Turn]
 type = VelSet
 trigger1 = Abs(Pos X - Parent, FVar(0)) < 80
-X = 3
-Y = -5
+X = 4
+Y = -4
 persistent = 0
 
 [State 2013, Turn]
 type = VelAdd
 trigger1 = Anim = 7201
-Y = 0.43
+Y = 0.4
 
 [State 2013, Turn]
 type = ChangeAnim
 trigger1 = Anim = 7201 && Pos Y > 0
 trigger1 = Var(0) := 1
+trigger2 = Anim = 7201 && AnimElemTime(1) >= 20
+trigger2 = Var(0) := 1
 value = 7203
 persistent = 0
 
@@ -537,6 +568,13 @@ juggle = 10
 anim = 7210
 velset = 4, 6
 
+[State 200, Dampen]
+Type=ParentVarset
+Trigger1 = MoveHit
+fvar(39) = parent, fvar(39)*0.9
+persistent = 0
+ignorehitpause = 1
+
 [State 2012, Prevent Undergound Juggles]
 type= targetbind
 trigger1= movehit=1
@@ -586,7 +624,7 @@ ignorehitpause = 1
 type = HitDef
 trigger1 = !Time 
 attr = S, HP
-damage = 72,3
+damage = Floor(82* parent, fvar(39)),3
 animtype = Hard
 air.type = Low
 guardflag = M
@@ -812,7 +850,7 @@ ctrl = 1
 
 ;Glaciers
 [Statedef 2022]
-type    = A
+type    = S
 movetype= A
 physics = N
 poweradd= 0
@@ -864,11 +902,18 @@ value = , AT
 time = 1
 ignorehitpause = 1
 
+[State 200, Dampen]
+Type=ParentVarset
+Trigger1 = MoveHit
+fvar(39) = parent, fvar(39)*0.93
+persistent = 0
+ignorehitpause = 1
+
 [State 2013, HitDef]
 type = HitDef
 trigger1 = !Time 
 attr = S, HP
-damage = 28 + 20 * Var(0),3
+damage = Floor((24 + 20 * Var(0))* parent, fvar(39)),3
 animtype = Hard
 air.type = Low
 guardflag = M
@@ -1203,6 +1248,12 @@ movetype = H
 physics = N
 sprpriority = 1
 
+[State 2102, Hit]
+type = LifeAdd
+trigger1 = GameTime % 20 = 0
+value = 20
+kill = 0
+
 [State 2023, Anim]
 type = ChangeAnim2
 trigger1 = !Time 
@@ -1328,7 +1379,6 @@ type = A
 movetype = H
 physics = N
 sprpriority = 1
-
 
 [State 802, Exit]
 type = VelSet
@@ -1521,14 +1571,28 @@ velset = 0,0
 sprpriority = 1
 facep2 = 1
 
+[State 1000, Pawnch]
+type = Helper
+trigger1 = Time = 10
+name = "Haste Clock"
+ID = 2200
+stateno = 2201
+pos = 0, -100
+postype = p1    ;p2,front,back,left,right
+facing = 1
+keyctrl = 0
+ownpal = 1
+persistent = 0
+supermovetime = 99999
+
 [State 200, Explod]
 type = Explod
-trigger1 = !Time
-anim = 7023
+trigger1 = Time = 10
+anim = 7231
 ID = 200
-pos = 0, -40
+pos = 0, 0
 postype = p1  ;p2,front,back,left,right
-facing = 1
+facing = Facing
 vfacing = 1
 bindtime = -1
 vel = 0,0
@@ -1566,33 +1630,53 @@ supermovetime = 9999
 [State 2110, Super Pause]
 type = SuperPause
 trigger1 = Time = 1
-time = 60
-movetime = 60
+time = 80
+movetime = 80
 anim = -1
 pos = 0, -20
 sound = S7010,2
 p2defmul = 1
 darken = 0
 
-[State 2110, Super Pause]
-type = Explod
-trigger1 = AnimElem = 9
-removetime = -2
-anim = 7110
-pos = 0, -20
-ownpal = 1
-sprpriority = 3
-removeongethit = 1
-supermovetime = 99999
 
 [State 2110, VarSet]
 type = VarSet
-trigger1 = (!AnimTime)
+trigger1 = Time > 1 && !NumHelper(7000) && !NumHelper(2200)
 v = 21
 value = 1
 
 [State 2110, End]
 type = ChangeState
-trigger1 = Time > 1 && !NumHelper(7000) && Var(21) > 0
+trigger1 = Time > 1 && !NumHelper(7000) && !NumHelper(2200) && Var(21) > 0
 value = 0
 ctrl = 1
+
+;Haste Clock
+[Statedef 2201]
+type    = A
+movetype= I
+physics = N
+ctrl = 0
+anim = 7230
+sprpriority = 2
+
+[State 2201, Vel]
+type = PosAdd
+trigger1 = 1
+Y = (Parent, Pos Y - Pos Y - 60)/20.0
+
+[State 2201, Trans]
+type = Trans
+trigger1 = Time =[0, 16]
+trans = addalpha
+alpha = 16*Time, 256 - 16 * Time
+
+[State 2201, Trans]
+type = Trans
+trigger1 = Time =[70, 86]
+trans = addalpha
+alpha = 256 - 16*(Time - 70), 16 * (Time - 70)
+
+[State 2201, End]
+type = DestroySelf
+trigger1 = Time >= 86
