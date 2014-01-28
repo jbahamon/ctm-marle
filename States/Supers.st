@@ -558,7 +558,7 @@ ctrl = 1
 
 ;Ice Block
 [Statedef 2012]
-type    = A
+type    = S
 movetype= A
 physics = N
 poweradd= 0
@@ -672,7 +672,7 @@ ignorehitpause = 1
 
 ;Ice Block GetHit
 [Statedef 2013]
-type    = A
+type    = S
 movetype= H
 physics = N
 poweradd= 0
@@ -722,7 +722,7 @@ ignorehitpause = 1
 
 ;Ice Block End
 [Statedef 2014]
-type    = A
+type    = S
 movetype= H
 physics = N
 poweradd= 0
@@ -1127,6 +1127,10 @@ ownpal = 1
 supermovetime = 999999
 persistent = 0
 
+[State 2002, Hit]
+type = TargetLifeAdd
+trigger1 = Time = 60
+value = -40
 
 [State 2002, Custom]
 type = Helper
@@ -1143,6 +1147,10 @@ ownpal = 1
 supermovetime = 999999
 persistent = 0
 
+[State 2002, Hit]
+type = TargetLifeAdd
+trigger1 = Time = 120
+value = -40
 
 [State 2002, Bind]
 type = VarAdd
@@ -1178,7 +1186,7 @@ trigger1 = Time = 120
 ID = 2103
 stateno = 2109
 name = "Ice"
-pos = FVar(0) , FVar(1) + Floor(1.3 * (Target, Const(size.mid.pos.y)))
+pos = Floor(FVar(0)) , Floor(FVar(1) + 1.3 * (Target, Const(size.mid.pos.y)))
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
@@ -1193,13 +1201,20 @@ trigger1 = Time = 170
 ID = 2104
 stateno = 2115
 name = "Schala"
-pos = FVar(0) - 40 , FVar(1) + Floor(0.3 * (Target, Const(size.mid.pos.y)))
+pos = Floor(FVar(0) - 40), Floor(FVar(1) + 0.3 * (Target, Const(size.mid.pos.y)))
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
 ownpal = 1
 supermovetime = 999999
 persistent = 0
+
+[State 2002, Hit]
+type = TargetLifeAdd
+triggerall = NumHelper(2104)
+trigger1 = Helper(2104), Time % 23 = 7
+trigger2 = Helper(2104), Time % 23 = 18
+value = -17
 
 [State 2002, Custom]
 type = Helper
@@ -1209,7 +1224,7 @@ trigger1 = !NumHelper(2104)
 ID = 2105
 stateno = 2107
 name = "Flash"
-pos = FVar(0) - 40 , FVar(1) + Floor(0.3 * (Target, Const(size.mid.pos.y)))
+pos = Floor(FVar(0) - 40), Floor(FVar(1) + 0.3 * (Target, Const(size.mid.pos.y)))
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
@@ -1247,12 +1262,6 @@ type = A
 movetype = H
 physics = N
 sprpriority = 1
-
-[State 2102, Hit]
-type = LifeAdd
-trigger1 = GameTime % 20 = 0
-value = 20
-kill = 0
 
 [State 2023, Anim]
 type = ChangeAnim2

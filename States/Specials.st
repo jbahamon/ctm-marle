@@ -99,7 +99,7 @@ triggerall = !MoveContact
 triggerall = !MoveReversed
 trigger1 = Time > 0
 priority = 6, Hit
-attr = A,SP
+attr = S,SP
 damage = floor(50* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
@@ -194,7 +194,7 @@ ignorehitpause = 1
 ; Aura
 [Statedef 1010]
 type    = S
-movetype= A
+movetype= I
 physics = S
 juggle  = 3
 ctrl = 0
@@ -485,7 +485,7 @@ ignorehitpause = 1
 type = HitDef
 trigger1 = !Time
 attr = S, SA
-hitflag = MAFP
+hitflag = MA
 animtype = Hard
 damage = 45, 10
 getpower = 0, 0
@@ -735,7 +735,7 @@ ctrl = 1
 
 ;Siren Shot
 [Statedef 1031]
-type = A
+type = S
 physics = N
 movetype = A
 anim = 7130
@@ -1014,7 +1014,7 @@ value = 1043
 
 ; Ice Spike
 [Statedef 1041]
-type    = S
+type    = A
 movetype= A
 physics = N
 juggle  = 3
@@ -1052,7 +1052,7 @@ attr = A,SP
 damage = Floor(60* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
-guardflag = MA
+guardflag = HA
 pausetime = 0, 26
 sparkno = -1
 ground.type = High
@@ -1114,8 +1114,8 @@ ignorehitpause = 1
 
 ; Ice Spike GetHit
 [Statedef 1042]
-type    = S
-movetype= A
+type    = A
+movetype= H
 physics = N
 juggle  = 3
 ctrl = 0
@@ -1190,7 +1190,7 @@ ignorehitpause = 1
 [Statedef 1043]
 type    = S
 movetype= I
-physics = S
+physics = N
 ctrl = 0
 anim = 47
 sprpriority = 1

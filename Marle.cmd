@@ -604,10 +604,10 @@ trigger1 = ctrl
 [State -1, Freeze Completion]
 type = ChangeState
 value = 2100
-trigger1 = Command = "x";"qcfhcba" || Command = "qcfhcbb" || Command = "qcfhcbc"
+trigger1 = Command = "qcfhcba" || Command = "qcfhcbb" || Command = "qcfhcbc"
 triggerall = Var(21) > 0
-;trigger1 = statetype != A
-;trigger1 = ctrl || ((stateno = [200, 299]) && time <= 10)
+trigger1 = statetype != A
+trigger1 = ctrl || ((stateno = [200, 299]) && time <= 10)
 ;---------------------------------------------------------------------------
 [State -1, Glacier]
 type = ChangeState

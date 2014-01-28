@@ -368,7 +368,7 @@ ignorehitpause = 1
 type = ChangeAnim
 triggerall = (Var(21) > 0) && (RoundState = 2) && (MoveType != H) && StateNo != [2100, 2102]
 trigger1 = AnimElemTime(AnimElemNo(0) + 1) < 0
-trigger1 = AnimElemTime(AnimElemNo(0)) > floor ((AnimElemTime(AnimElemNo(0)) - AnimElemTime(AnimElemNo(0) + 1))/2.0)
+trigger1 = AnimElemTime(AnimElemNo(0)) > floor (2*(AnimElemTime(AnimElemNo(0)) - AnimElemTime(AnimElemNo(0) + 1))/3.0)
 ignorehitpause = 1
 value = Anim
 elem = AnimElemNo(0) + 1
