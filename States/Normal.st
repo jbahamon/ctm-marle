@@ -71,6 +71,7 @@ air.type = High                  ;Type: High, Low, Trip (def: same as ground.typ
 air.velocity = -1.4,-.8           ;X-velocity at which opponent is pushed,
 ;Y-velocity at which opponent is pushed
 air.hittime = 12                 ;Time before opponent regains control in air
+air.juggle  = 2  
 palfx.add = 200, 200, 200
 palfx.mul = 256, 256, 256
 palfx.time = 8
@@ -150,13 +151,14 @@ hitflag = MAF
 pausetime = 12,12
 sparkno = S7006
 sparkxy = -5, -25
-hitsound   = S7040,1
+hitsound   = S7020,1
 guardsound = 6,0
 ground.type = High
 ground.slidetime = 0
 ground.hittime  = 25
 ground.velocity = -.5, -4
 air.velocity = -.5,-4
+air.juggle  = 4
 getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 36, 72)), IfElse(Var(21) > 0, 0, 18)
 givepower = 18, 18
 palfx.add = 200, 200, 200
@@ -195,7 +197,7 @@ ignorehitpause = 1
 [State 220, 1]
 type = PlaySnd
 trigger1 = AnimElem = 3
-value = S7000, 1
+value = S7010,5
 
 [State 220, 2]
 type = Projectile
@@ -213,13 +215,14 @@ damage    = 42
 guardflag = MA
 pausetime = 18,18
 sparkno = -1
-hitsound   = S7020,3
+hitsound   = S7020,4
 guardsound = 6,0
 ground.type = High
 ground.slidetime = 14
 ground.hittime  = 15
 ground.velocity = -2
 air.velocity = -2,-2
+air.juggle  = 6
 getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 216)), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
 palfx.add = 7, 100, 128
@@ -244,7 +247,7 @@ ctrl = 1
 type    = C
 movetype= A
 physics = C
-juggle  = 2
+juggle  = 3
 poweradd= 0
 ctrl = 0
 velset = 0,0
@@ -255,7 +258,7 @@ facep2 = 1
 [State 400, 1]
 type = PlaySnd
 trigger1 = AnimElem = 2
-value = S7010, 1
+value = S7000, 0
 
 [State 200, Dampen]
 Type=Varset
@@ -298,13 +301,14 @@ guardflag = M
 pausetime = 8, 8
 sparkno = S7005
 sparkxy = 0,-20
-hitsound   = S7040,0
+hitsound   = S7020,1
 guardsound = 6,0
 ground.type = Low
 ground.slidetime = 4
 ground.hittime  = 9
 ground.velocity = -2
 air.velocity = -1.5,-3
+air.juggle  = 3
 getpower = IfElse(Var(21) > 0, 0, 72), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
 palfx.add = 200, 200, 200
@@ -338,11 +342,6 @@ Trigger1 = MoveHit
 fvar(39) = fvar(39)*0.85
 persistent = 0
 ignorehitpause = 1
-
-[State 410, 1]
-type = PlaySnd
-trigger1 = AnimElem = 3
-value = S7000, 0
 
 [State 420, Explod]
 type = Helper
@@ -382,7 +381,7 @@ hitflag = MAF
 guardflag = L
 pausetime = 10,23
 sparkno = -1
-hitsound   = S7020,2
+hitsound   = -1
 guardsound = 6,0
 ground.type = Low
 ground.slidetime = 8
@@ -391,6 +390,7 @@ ground.velocity = -1, -4
 air.velocity = -1,-4
 getpower = IfElse(Parent, Var(21) > 0, 0, ifelse(p2movetype = H, 72, 144)), IfElse(Parent, Var(21) > 0, 0, 36)
 givepower = 36, 36
+air.juggle  = 4
 palfx.invertall = 0
 palfx.color = 0
 palfx.add = 80, 80, 180
@@ -436,6 +436,12 @@ physics = N
 movetype = A
 velset = 0, 0
 anim = 7300
+
+[State 411, Snd]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,2
+ignorehitpause = 1
 
 [State 412, Angle]
 Type = VarSet
@@ -495,8 +501,8 @@ ignorehitpause = 1
 
 [State 420, 1]
 type = PlaySnd
-trigger1 = AnimElem = 4
-value = S7000,1
+trigger1 = AnimElem = 3
+value = S7010,5
 
 [State 220, 2]
 type = Projectile
@@ -511,17 +517,18 @@ projremovetime = 18
 velocity = 2,-7
 accel = 0, 0.46
 animtype  = Hard
-damage    = 42
+damage    = 49
 guardflag = MA
 pausetime = 18,18
 sparkno = -1
-hitsound   = S7020,3
+hitsound   = S7020,4
 guardsound = 6,0
 ground.type = High
 ground.slidetime = 14
 ground.hittime  = 15
 ground.velocity = -4
 air.velocity = -4,-2
+air.juggle  = 6
 getpower = IfElse(Var(21) > 0, 0, ifelse(p2movetype = H, 72, 216)), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
 palfx.add = 7, 100, 128
@@ -619,6 +626,7 @@ ground.hittime  = 8
 ground.velocity = -4
 air.velocity = -1.3,-3
 air.hittime = 14
+air.juggle = 2
 getpower = IfElse(Var(21) > 0, 0, 72), IfElse(Var(21) > 0, 0, 36)
 givepower = 36, 36
 palfx.add = 200, 200, 200
@@ -708,7 +716,7 @@ ignorehitpause = 1
 type = HitDef
 trigger1 = Time = 0
 attr = A, NA
-damage = 45
+damage = 40
 hitflag = MAF
 guardflag = HA
 priority = 3
@@ -723,6 +731,7 @@ ground.hittime  = 10
 ground.velocity = -0.5, -5
 air.velocity = -0.5,-5
 air.hittime = 14
+air.juggle = 4
 givepower = 36, 36
 palfx.add = 200, 200, 200
 palfx.mul = 256, 256, 256
@@ -883,13 +892,13 @@ ignorehitpause = 1
 type = HitDef
 trigger1 = Parent, AnimElem = 4
 attr = C, NA
-damage    = 34
+damage    = 49
 animtype  = Medium
 hitflag = MAF
 guardflag = HA
 pausetime = 10,10
 sparkno = -1
-hitsound   = S7020,2
+hitsound   = S7100,2
 guardsound = 6,0
 ground.type = Low
 ground.slidetime = 8
@@ -936,6 +945,11 @@ physics = N
 movetype = A
 velset = 0, 0
 anim = 7300
+
+[State 411, Snd]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,2
 
 [State 412, Angle]
 Type = VarSet

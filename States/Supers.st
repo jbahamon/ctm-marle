@@ -39,7 +39,7 @@ trigger1 = time = 1
 time = 45
 movetime = 45
 anim = -1
-sound = S7010,2
+sound = S7100,1
 p2defmul = 1
 darken = 0
 
@@ -59,6 +59,13 @@ anim = 2001
 sprpriority = 2
 facep2 = 1
 
+[State 3060, Snd]
+type = PlaySnd
+trigger1 = !Time
+value = S7050,2
+channel = 0
+ignorehitpause = 1
+
 [State 3060,Hit]
 type = HitDef
 trigger1 = time = 1
@@ -66,7 +73,7 @@ attr = S,HT
 hitflag = M-
 priority = 1, Miss
 sparkno = -1
-hitsound = S7002,3
+hitsound = S7020,2
 p1sprpriority = 1
 p2sprpriority = 0
 p1facing = 1
@@ -209,6 +216,12 @@ freq = 120
 ampl = 6 + Random % 4
 time = 6 + Random % 4
 
+[State 2002, Shake]
+type = PlaySnd
+trigger1 = Var(0)
+trigger1 = Var(1) < 80
+trigger1 = Time % 6 = 0 
+value = S7020, Random % 6
 
 [State 2002, Shake]
 type = EnvShake
@@ -357,6 +370,12 @@ trigger1 = Abs(Pos X - Parent, FVar(0)) < 80
 value = 7201
 persistent = 0
 
+[State 2013, JumpSnd]
+type = PlaySnd
+trigger1 = Anim = 7201
+value = S7000,1
+persistent = 0
+
 [State 2013, Turn]
 type = VelSet
 trigger1 = Abs(Pos X - Parent, FVar(0)) < 80
@@ -376,6 +395,12 @@ trigger1 = Var(0) := 1
 trigger2 = Anim = 7201 && AnimElemTime(1) >= 20
 trigger2 = Var(0) := 1
 value = 7203
+persistent = 0
+
+[State 2013, JumpSnd]
+type = PlaySnd
+trigger1 = Var(0) = 1
+value = S7020,2
 persistent = 0
 
 [State 2013, Turn]
@@ -632,7 +657,7 @@ hitflag = MAF
 priority = 4, Hit
 pausetime = 0,27
 sparkno = -1
-hitsound = S7020,5
+hitsound = -1
 guardsound = 5,0
 ground.type = Low
 ground.velocity = 0, -3
@@ -660,6 +685,14 @@ palfx.invertall = 0
 palfx.color = 0
 palfx.add = 80, 80, 180
 palfx.time = 26
+ignorehitpause = 1
+
+
+[State 1021, ChangeState]
+type = PlaySnd
+trigger1 = Pos Y >= - Vel Y
+trigger1 = Vel Y > 0
+value = S7020,6
 ignorehitpause = 1
 
 ;End
@@ -771,7 +804,7 @@ ignorehitpause = 1
 
 
 ;---------------------------------------------------------------------------
-; Glacier
+; Glacier Spikes
 [Statedef 2020]
 type    = S
 movetype= A
@@ -817,7 +850,7 @@ trigger1 = Time > 1 && !NumHelper(7000)
 value = 2021
 ctrl = 0
 
-;Glacier Summoning
+;Glacier Spikes Summoning
 [Statedef 2021]
 type    = S
 movetype= A
@@ -832,7 +865,7 @@ type = Helper
 trigger1 = Time = 0
 trigger2 = Time = 15
 trigger3 = Time = 30
-name = "Glacier"
+name = "Glacier Spike"
 ID = 2020
 stateno = 2022
 pos = 25 * (NumHelper(2020)), 0
@@ -848,7 +881,7 @@ trigger2 = NumHelper(2020) = 3
 value = 0
 ctrl = 1
 
-;Glaciers
+; Spikes
 [Statedef 2022]
 type    = S
 movetype= A
@@ -946,6 +979,13 @@ palfx.add = 80, 80, 180
 palfx.time = 26
 ignorehitpause = 1
 
+
+[State 1021, ChangeState]
+type = PlaySnd
+trigger1 = !Time
+value = S7020,5
+ignorehitpause = 1
+
 [State 1021, ChangeState]
 type = Trans
 trigger1 = AnimElemNo(0) < 9
@@ -965,7 +1005,7 @@ type = DestroySelf
 trigger1 = !AnimTime
 ignorehitpause = 1
 
-;Glacier GetHit
+; Spikes GetHit
 [Statedef 2023]
 type    = S
 movetype= A

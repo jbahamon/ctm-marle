@@ -21,8 +21,9 @@ var(0) = IfElse(command = "qcfc", 2, IfElse(command = "qcfb", 1, 0))
 
 [State 1100, JumpSnd]
 type = PlaySnd
-trigger1 = AnimElem = 3
-value = S7000,1
+trigger1 = !Time
+value = S7100,0
+channel = 0
 ignorehitpause = 1
 
 [State 1000, Pawnch]
@@ -58,6 +59,13 @@ sprpriority = 2
 type = AssertSpecial
 trigger1 = 1
 flag = NoShadow
+ignorehitpause = 1
+
+[State 1000, Fade]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,1
+channel = 0
 ignorehitpause = 1
 
 [State 1021, Strength]
@@ -103,6 +111,7 @@ attr = S,SP
 damage = floor(50* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
+hitsound = -1
 guardflag = MA
 pausetime = 0, 26
 sparkno = -1
@@ -167,6 +176,13 @@ anim = 7102
 sprpriority = 4
 
 [State 1000, Fade]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,2
+channel = 0
+ignorehitpause = 1
+
+[State 1000, Fade]
 type = RemoveExplod
 trigger1 = !Time
 ID = 1001
@@ -211,8 +227,17 @@ var(0) = ifelse(command = "dbc", 2, ifelse(command = "dbb", 1, 0))
 [State 1100, JumpSnd]
 type = PlaySnd
 trigger1 = AnimElem = 3
-value = S7000,1
+channel = 0
+value = S7030,0
 ignorehitpause = 1
+
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = AnimElemNo(0) = 4
+channel = 0
+value = S7030,1
+ignorehitpause = 1
+persistent = 0
 
 [State 220, Explod]
 type = Explod
@@ -333,7 +358,8 @@ var(0) = IfElse(command = "dfc", 2, IfElse(command = "dfb", 1, 0))
 [State 1100, JumpSnd]
 type = PlaySnd
 trigger1 = AnimElem = 3
-value = S7000,1
+trigger2 = AnimElem = 5
+value = S7010,0
 ignorehitpause = 1
 
 [State 1020, Reversal]
@@ -491,6 +517,7 @@ damage = 45, 10
 getpower = 0, 0
 guardflag = MA
 sparkno = -1
+hitsound = S7100,2
 pausetime = 0, 80
 guardsound = S0, 100
 ground.type = Low
@@ -528,6 +555,12 @@ anim = 1025
 sprpriority = 1
 poweradd = IfElse(Var(21) > 0, 0, 72)
 facep2 = 1
+
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,0
+ignorehitpause = 1
 
 [State 1010, Strength]
 type = VarSet
@@ -743,6 +776,11 @@ ctrl = 0
 velset = 0,0
 sprpriority = 4
 
+[State 1002, SNd]
+type= PlaySnd
+trigger1 = !Time
+value = S7010,5
+
 [State 1002, Strength]
 type = VarSet
 trigger1 = !time
@@ -769,6 +807,7 @@ attr = A,SP
 damage = 10, 4
 animtype = Hard
 hitflag = MAF
+hitsound = S7020,4
 guardflag = MA
 pausetime = 4,4
 sparkno = S7131
@@ -959,6 +998,12 @@ sprpriority = 1
 poweradd = IfElse(Var(21) > 0, 0, 72)
 facep2 = 1
 
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,0
+ignorehitpause = 1
+
 [State 620, VelAdd]
 type = VelAdd
 trigger1 = AnimElemNo(0) >= 5
@@ -987,12 +1032,6 @@ type = VarSet
 trigger1 = !Time
 var(0) = IfElse(command = "dfc", 2, IfElse(command = "dfb", 1, 0))
 
-[State 1100, JumpSnd]
-type = PlaySnd
-trigger1 = AnimElem = 3
-value = S7000,1
-ignorehitpause = 1
-
 [State 1000, Pawnch]
 type = Helper
 trigger1 = AnimElem = 4
@@ -1017,7 +1056,7 @@ value = 1043
 type    = A
 movetype= A
 physics = N
-juggle  = 3
+juggle  = 10
 ctrl = 0
 anim = 7140
 sprpriority = 2
@@ -1049,9 +1088,10 @@ triggerall = !MoveReversed
 trigger1 = Time > 16
 priority = 6, Hit
 attr = A,SP
-damage = Floor(60* parent, fvar(39)), 4
+damage = Floor(80* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
+hitsound = S7020,5
 guardflag = HA
 pausetime = 0, 26
 sparkno = -1
@@ -1060,6 +1100,7 @@ ground.slidetime = 20
 ground.hittime = 10
 ground.velocity = -2, -3
 air.velocity  = -2, -3
+air.juggle = 10
 fall = 1
 air.fall = 1
 p2facing = 1
