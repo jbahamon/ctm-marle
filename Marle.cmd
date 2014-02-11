@@ -654,7 +654,7 @@ triggerall =  command = "dfa" || command = "dfb" || command = "dfc"
 trigger1 = statetype != A
 trigger1 = ctrl
 ;--------------------------------------------------------------------------
-[State -1, Siren]
+[State -1, Siren's Kiss]
 type = ChangeState
 value = 1030
 triggerall = !NumHelper(1030)
@@ -751,7 +751,6 @@ value = 195
 triggerall = command = "start"
 trigger1 = statetype = S
 trigger1 = ctrl
-trigger2 = StateNo = 195
 
 ;---------------------------------------------------------------------------
 ;Crouching Light

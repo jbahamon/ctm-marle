@@ -50,7 +50,7 @@ ignorehitpause = 1
 type = HitDef
 trigger1 = !Time
 attr = S, NA                     ;Attribute: Standing, Normal Attack
-damage = 18                   ;Damage that move inflicts, guard damage
+damage = 15                   ;Damage that move inflicts, guard damage
 animtype = Light                 ;Animation type: Light, Medium, Heavy, Back (def: Light)
 guardflag = M                    ;Flags on how move is to be guarded against
 hitflag = MAF                    ;Flags of conditions that move can hit
@@ -375,7 +375,7 @@ anim = 7015
 type = HitDef
 trigger1 = Parent, AnimElem = 3
 attr = C, NA
-damage    = 34
+damage    = 30
 animtype  = Medium
 hitflag = MAF
 guardflag = L
@@ -441,6 +441,7 @@ anim = 7300
 type = PlaySnd
 trigger1 = !Time
 value = S7100,2
+persistent = 0
 ignorehitpause = 1
 
 [State 412, Angle]
@@ -517,7 +518,7 @@ projremovetime = 18
 velocity = 2,-7
 accel = 0, 0.46
 animtype  = Hard
-damage    = 49
+damage    = 45
 guardflag = MA
 pausetime = 18,18
 sparkno = -1
@@ -716,7 +717,7 @@ ignorehitpause = 1
 type = HitDef
 trigger1 = Time = 0
 attr = A, NA
-damage = 40
+damage = 33
 hitflag = MAF
 guardflag = HA
 priority = 3
@@ -892,7 +893,7 @@ ignorehitpause = 1
 type = HitDef
 trigger1 = Parent, AnimElem = 4
 attr = C, NA
-damage    = 49
+damage    = 42
 animtype  = Medium
 hitflag = MAF
 guardflag = HA
@@ -949,7 +950,9 @@ anim = 7300
 [State 411, Snd]
 type = PlaySnd
 trigger1 = !Time
+persistent = 0
 value = S7100,2
+ignorehitpause = 1
 
 [State 412, Angle]
 Type = VarSet
@@ -986,7 +989,7 @@ ignorehitpause = 1
 
 
 ;---------------------------------------------------------------------------
-; Magic Bind
+; Freeze
 [Statedef 800]
 type    = S
 movetype= A
@@ -1002,9 +1005,14 @@ velset = 0,0
 [State 803, Pal]
 type = PalFX
 trigger1 = 1
-add = Floor(64 * Sin(Time * Pi/16.0)), Floor(64 * Sin(Time * Pi/16.0)), Floor(64 * Sin(Time * Pi/16.0))
+add = Floor(32 * Sin(Time * Pi/16.0)) + 32, 32 + Floor(32 * Sin(Time * Pi/16.0)), 32 + Floor(32 * Sin(Time * Pi/16.0))
 mul = 256, 256, 256
 time = 1
+
+[State 800, Direction]
+type = VarSet
+trigger1 = !Time
+var(0) = IfElse(command = "holdback", -1, 1)
 
 [State 800, Do not guard]
 type = attackdist
@@ -1019,7 +1027,7 @@ movetype = I
 [State 800, Sound]
 type = PlaySnd
 trigger1 = AnimElem = 2
-value = S7010,0
+value = S7000,1
 
 [State 800, Hit]
 type = hitdef
@@ -1044,116 +1052,68 @@ trigger1 = !AnimTime
 value = 0
 ctrl = 1
 
-;Magic Bind - Casting
+; Freeze- Push and Cast
 [Statedef 801]
 type    = S
 movetype= A
 physics = S
 juggle  = 3
-anim = 801
 ctrl = 0
+anim = 801
 sprpriority = 1
 poweradd = IfElse(Var(21) > 0, 0, 72)
 velset = 0,0
 
 [State 801, Bind]
-type = TargetBind
-trigger1 = AnimElemNo(0) = [1, 2]
-pos = 15, 0
+type = VarSet
+trigger1 = !Time
+trigger1 = NumTarget
+V = 1
+value = (Target, Pos X - Pos X) * Facing
+ignorehitpause = 1
 
 [State 801, Bind]
 type = TargetBind
-trigger1 = AnimElemNo(0) = 3
-pos = 15 + 2 * AnimElemTime(3), 0
+trigger1 = NumTarget
+pos = Var(1), 0
 
-[State 801, Bind]
-type = TargetBind
-trigger1 = AnimElemNo(0) > 3
-pos = 55, 0
+
+[State 801, Shot]
+type = Helper
+trigger1 = AnimElemTime(4) = 4
+trigger2 = AnimElemTime(4) = 8
+trigger3 = AnimElemTime(4) = 12
+name = "Freeze Spike"
+ID = 800
+stateno = 804
+postype = p1    ;p2,front,back,left,right
+pos = Var(1) + (Random % 25) - 12, (Target, Const(size.head.pos.y)) - 40 - (Random % 30)
+facing = 1
+keyctrl = 0
+ownpal = 1
+
+[State 801, push]
+type = VarAdd
+trigger1 = AnimElemNo(0) = 1
+var(1) = 2
 
 [State 801, Throw Enemy]
 type = TargetState
-trigger1 = Target, StateNo = 802 
 trigger1 = NumTarget
-trigger1 = AnimElem = 6
+trigger1 = Time > 60
 value = 803
-persistent = 0
-
-[State 1000, Pawnch]
-type = Helper
-trigger1 = Target, StateNo = 803 
-trigger1 = Target, Time = 5 || Target, Time = 15 || Target, Time = 30
-trigger1 = Var(22) = 0
-trigger1 = !Var(21)
-name = "Lightning"
-ID = 800
-stateno = 806
-pos = Floor(Target, ScreenPos X - ScreenPos X) * Facing + (Random % 25) - 12, 0
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-
-[State 1000, Pawnch]
-type = Helper
-trigger1 = Target, StateNo = 803 
-trigger1 = Target, Time = 5 || Target, Time = 15 || Target, Time = 30
-trigger1 = Var(22) = 1
-trigger1 = !Var(21)
-name = "Water Bubble"
-ID = 800
-stateno = 807
-pos = Floor(Target, ScreenPos X - ScreenPos X) * Facing + (Random % 25) - 12, Floor(Target, Const(size.mid.pos.y) * (0.5 + Random/1000.0))
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-
-[State 1000, Pawnch]
-type = Helper
-trigger1 = Target, StateNo = 803 
-trigger1 = Target, Time = 5 || Target, Time = 15 || Target, Time = 30
-trigger1 = Var(22) = 2
-trigger1 = !Var(21)
-name = "Fire"
-ID = 800
-stateno = 808
-pos = Floor(Target, ScreenPos X - ScreenPos X) * Facing + (Random % 25) - 12, Floor(Target, Const(size.mid.pos.y) * (Random/2000.0))
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-
-[State 1000, Pawnch]
-type = Helper
-trigger1 = Target, StateNo = 803 
-trigger1 = Target, Time = 5 
-trigger1 = Var(21)
-name = "Dark Bomb"
-ID = 800
-stateno = 809
-pos = Floor(Target, ScreenPos X - ScreenPos X) * Facing, 0
-postype = p1    ;p2,front,back,left,right
-facing = 1
-keyctrl = 0
-ownpal = 1
-persistent = 0
 
 [State 801, Throw Enemy]
-type = TargetState
-trigger1 = Target, StateNo = 803 
-trigger1 = NumTarget
-trigger1 = Target, Time > 33
-value = 804
-persistent = 0
+type = TargetDrop
+trigger1 = Target, StateNo = 803
 
 [State 801, End]
 type = ChangeState
-trigger1 = Target, StateNo = 804
+trigger1 = !NumTarget
 value = 0
 ctrl = 1
 
-;Magic Bind - Bound
+;Freeze - Gethit
 [Statedef 802]
 type = S
 movetype = H
@@ -1166,40 +1126,31 @@ type = SprPriority
 trigger1 = AnimElem = 3
 value = 2
 
-[State 802, Anim]
-type = ChangeAnim2
-trigger1 = !Time
-value = 802
+[State 802, LifeAdd]
+type = LifeAdd
+trigger1 = Time = 26
+trigger2 = Time = 38
+trigger3 = Time = 50
+value = -27
+kill = Time > 60
 
-[State 802, Exit]
-type = SelfState
-trigger1 = !gethitvar(isbound)
-value = 5050
-
-;Magic Bind - Gethit
-[Statedef 803]
-type = S
-movetype = H
-physics = N
-ctrl = 0
-sprpriority = 0
-
-[State 803, Life]
+[State 802, Shake]
 type = EnvShake
-trigger1 = Time = 5
-trigger2 = Time = 15
-trigger3 = Time = 30
+trigger1 = Time = 26
+trigger2 = Time = 38
+trigger3 = Time = 50
 time = 5
 freq = 120
-ampl = 4
+ampl = 5
 
-[State 803, Pal]
-type = LifeAdd
-trigger1 = Time = 5
-trigger2 = Time = 15
-trigger3 = Time = 30
-value = -27
-kill = Time > 20
+[State 802, Shake]
+type = PalFX
+trigger1 = Time = 26
+trigger2 = Time = 38
+trigger3 = Time = 50
+add = 32, 48, 164
+color = 0
+time = 12
 
 [State 802, Anim]
 type = ChangeAnim2
@@ -1211,8 +1162,8 @@ type = SelfState
 trigger1 = !gethitvar(isbound)
 value = 5050
 
-;Magic Bind - End
-[Statedef 804]
+;Freeze - Air
+[Statedef 803]
 type = A
 movetype = H
 physics = N
@@ -1222,8 +1173,8 @@ sprpriority = 0
 [State 803, Vel]
 type = VelSet
 trigger1 = !Time
-y = -9
-x = -2
+y = -6
+x = -4
 
 [State 803, Vel]
 type = VelAdd
@@ -1240,6 +1191,20 @@ type = ChangeAnim2
 trigger1 = Vel Y > 0
 value = 804
 
+[State 803, Pal]
+type = PalFX
+trigger1 = (Vel y > 0) && (Pos y >= 0)
+add = 200, 200, 200
+mul = 256, 256, 256
+time = 8
+
+[State 803, Life]
+type = EnvShake
+trigger1 = (Vel y > 0) && (Pos y >= 0)
+time = 14
+freq = 120
+ampl = 4
+
 [State 803, Life]
 type = PosSet
 trigger1 = (Vel y > 0) && (Pos y >= 0)
@@ -1251,145 +1216,115 @@ trigger1 = (Vel y > 0) && (Pos y >= 0)
 value = 5100
 ctrl = 0
 
-;Lightning
-[Statedef 806]
-type = A
+; Ice Spike
+[Statedef 804]
+type    = A
+movetype= A
 physics = N
-movetype= I
-anim = 7040
+juggle  = 10
 ctrl = 0
-velset = 0,0
-sprpriority = 3
+anim = 7141
+sprpriority = 2
 
-[State 1001, NoShadow]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
+[State 1021, Strength]
+type = VarSet
+trigger1 = !Time
+var(0) = parent, var(0)
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = Time <= 16
+trans = addalpha
+alpha = Time * 16, 256
 ignorehitpause = 1
 
-[State 200, Explod]
+[State 1021, ChangeState]
+type = VelAdd
+trigger1 = Time > 10
+Y = 0.2
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = AngleDraw
+trigger1 = 1
+scale = 0.5, 0.5
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = Trans
+trigger1 = Time > 16
+trans = addalpha
+alpha = 256, 256
+ignorehitpause = 1
+
+[State 1021, ChangeState]
+type = ChangeState
+trigger1 = Pos Y > -Vel Y && Vel Y > 0
+value = 805
+ignorehitpause = 1
+
+; Ice Spike Landing
+[Statedef 805]
+type    = A
+movetype= I
+physics = N
+juggle  = 3
+ctrl = 0
+anim = 7141
+velset = 0, 0
+sprpriority = 2
+
+[State 412, Angle]
+Type = VarSet
+Trigger1 = 1
+fvar(0) = -(Pi * Random/1000.0)
+ignorehitpause = 1
+
+
+[State 2013, NormalScale]
+type = EnvShake
+trigger1 = !Time
+time = 8
+ampl = 6
+freq = 120
+ignorehitpause = 1
+
+[State 420, Explod]
 type = Explod
-trigger1 = AnimElem = 5
-anim = 7105
-ID = 200
+trigger1 = NumExplod(1040) < 4
+anim = 7016
+ID = 1040
+pos = 0, 0
 postype = p1  ;p2,front,back,left,right
 facing = 1
 vfacing = 1
-bindtime = -1
-vel = 0,0
+bindtime = 1
+vel = 2 * Cos(FVar(0)), 2 * Sin(FVar(0))
 accel = 0,0
 random = 0,0
 removetime = -2
-scale = 1.2, 0.7
-sprpriority = 0
+scale = 1,1
+sprpriority = 2
 ontop = 0
 shadow = 0,0,0
 ownpal = 1
 removeongethit = 1
 ignorehitpause = 1
 
-[State 1000, burst]
-type = Trans
-trigger1 = AnimElemTime(6) > 0
-trans = addalpha
-alpha = 256 - 8 * AnimElemTime(6), 256
-ignorehitpause = 1
-
-[State 1001, burst]
-type = DestroySelf
-trigger1 = AnimElemTime(6) > 32
-ignorehitpause = 1
-
-;Water Bubble
-[Statedef 807]
-type = A
-physics = N
-movetype= I
-anim = 7041
-ctrl = 0
-velset = 0,0
-sprpriority = 4
-
-[State 1002, Strength]
-type = VarSet
-trigger1 = !time
-var(0) = (root, var(0))
-
-[State 1002, NoShadow]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
-
-[State 1010, burst]
-type = DestroySelf
-trigger1 = !AnimTime
-
-; Fire
-[Statedef 808]
-type    = A
-movetype= I
-physics = N
-juggle  = 3
-ctrl = 0
-anim = 7042
-sprpriority = 2
-velset = 0, -0.4
-
-[State 1002, NoShadow]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
-ignorehitpause = 1
-
-[State 1015, assert]
-type = Trans
-trigger1 = AnimElemNo(0) < 7
-trans = addalpha
-alpha = 256, 128
-ignorehitpause = 1
-
-[State 1015, assert]
-type = Trans
-trigger1 = AnimElemNo(0) = 7
-trans = addalpha
-alpha = 256 - AnimElemTime(7) * 16, 128 + AnimElemTime(7) * 8
+[State 1021, ChangeState]
+type = AngleDraw
+trigger1 = Time > 0
+scale = 0.5, 0.5
 ignorehitpause = 1
 
 [State 1021, ChangeState]
-type = DestroySelf
-trigger1 = AnimElemTime(7) >= 16
-ignorehitpause = 1
-
-
-; Dark Bomb
-[Statedef 809]
-type    = A
-movetype= I
-physics = N
-juggle  = 3
-ctrl = 0
-anim = 7107
-sprpriority = 2
-velset = 0, 0
-
-[State 1015, assert]
 type = Trans
-trigger1 = 1
+trigger1 = AnimElemNo(0) = 1
 trans = addalpha
-alpha = 256, 128
-ignorehitpause = 1
-
-
-[State 1002, NoShadow]
-type = AssertSpecial
-trigger1 = 1
-flag = NoShadow
+alpha = 256 - AnimElemTime(1) * 16, 256
 ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = DestroySelf
 trigger1 = !AnimTime
 ignorehitpause = 1
-
-

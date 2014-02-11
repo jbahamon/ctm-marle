@@ -149,6 +149,11 @@ type = ChangeAnim
 trigger1 = RoundState = 0
 value = 191
 
+[State 192, 3]
+type = PlaySnd
+trigger1 = AnimElem = 3
+value = S7000,1
+
 [State 192, 3] ;Change to stand state when done
 type = ChangeState
 trigger1 = AnimTime = 0
@@ -176,6 +181,12 @@ type = PlaySnd
 trigger1 = AnimElem = 4
 value = S7010,1
 
+[State 192, 3]
+type = PlaySnd
+trigger1 = AnimElem = 6
+value = S7000,1
+
+
 [State 192, 3] ;Change to stand state when done
 type = ChangeState
 trigger1 = AnimTime = 0
@@ -192,9 +203,14 @@ movetype = I
 physics = S
 sprpriority = 1
 
+[State 192, 3]
+type = PlaySnd
+trigger1 = !Time
+value = S7010,1
+
 [State 195, 2]
 type = ChangeState
-trigger1 = Time > 38
+trigger1 = Time > 42
 value = 0
 ctrl = 1
 

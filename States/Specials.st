@@ -329,7 +329,7 @@ persistent = 0
 [State 1040, End]
 type = LifeAdd
 trigger1 = AnimElemNo(0) = 4
-value = IfElse((Life + 70) <= Const(data.life), 70, Const(data.life) - Life)
+value = IfElse((Life + 50) <= Const(data.life), 50, Const(data.life) - Life)
 persistent = 0
 
 [State 1040, End]
@@ -729,7 +729,7 @@ ignorehitpause = 1
 
 
 ;---------------------------------------------------------------------------
-; Siren
+; Siren's Kiss
 [Statedef 1030]
 type    = S
 movetype= A
@@ -1199,13 +1199,6 @@ ontop = 0
 shadow = 0,0,0
 ownpal = 1
 removeongethit = 1
-ignorehitpause = 1
-
-[State 1021, HB]
-type = NotHitBy
-trigger1 = 1
-time = -1
-value = SCA
 ignorehitpause = 1
 
 [State 1021, ChangeState]
