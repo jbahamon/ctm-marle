@@ -27,9 +27,9 @@ Her non-throw supers have good range, too.
 Throws
 --------------
 
-**Ice Maw**: F/B + (a+b)/(b+c)/(a+c) (Standing)
+**Freeze**: F/B + (a+b)/(b+c)/(a+c) (Standing)
 
-Marle pushes his opponent, then summons ice spikes to bite on 
+Marle pushes his opponent, then summons ice spikes to fall on 
 her opponent.
 
 **Siren's Kiss (inflicts Stop)**: D, DB, B + a/b/c (Air). Requires 500 Power.

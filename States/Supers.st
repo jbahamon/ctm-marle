@@ -451,7 +451,7 @@ value = 7200
 type = DestroySelf
 triggerall = Var(0) >= 2
 trigger1 = ScreenPos X < -20
-trigger1 = ScreenPos X > (GameWidth + 20)
+trigger2 = ScreenPos X > (GameWidth + 20)
 
 ; Fight Clouds
 [Statedef 2006]
@@ -1092,7 +1092,7 @@ trigger1 = time = 1
 time = 32
 movetime = 32
 anim = -1
-sound = S7000,2
+sound = S7010,2
 p2defmul = 1
 darken = 0
 
@@ -1128,6 +1128,13 @@ movetype=A
 ctrl = 0
 velset = 0, 0
 sprpriority = 1
+
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,1
+channel = 0
+ignorehitpause = 1
 
 [State 2002, Bind]
 type = VarSet
@@ -1314,12 +1321,37 @@ type = SelfState
 trigger1 = !gethitvar(isbound)
 value = 5050
 
+; Freeze Completion - End
+[Statedef 2103]
+type = A
+movetype = H
+physics = N
+sprpriority = 1
+
+[State 802, Exit]
+type = VelSet
+trigger1 = Time > 5
+trigger1 = !gethitvar(isbound)
+X = - 3
+Y = - 5
+
+[State 802, Exit]
+type = SelfState
+trigger1 = Time > 5
+trigger1 = !gethitvar(isbound)
+value = 5050
+
 ; Flash BG
 [Statedef 2107]
 type = S
 physics = N
 movetype = I
 anim = 7300
+
+[State 2013, Shade]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,2
 
 [State 7000, Pal Down]
 type = BGPalFX
@@ -1421,27 +1453,6 @@ type = DestroySelf
 trigger1 = Var(0) > 16
 trigger2 = Root, StateNo != 2101
 
-
-; Freeze Completion - End
-[Statedef 2103]
-type = A
-movetype = H
-physics = N
-sprpriority = 1
-
-[State 802, Exit]
-type = VelSet
-trigger1 = Time > 5
-trigger1 = !gethitvar(isbound)
-X = - 3
-Y = - 5
-
-[State 802, Exit]
-type = SelfState
-trigger1 = Time > 5
-trigger1 = !gethitvar(isbound)
-value = 5050
-
 ;Dancer
 [Statedef 2110]
 type    = S
@@ -1466,6 +1477,13 @@ type = Trans
 trigger1 = AnimElemTime(1) = [0, 16]
 trans = addalpha
 alpha = 16 * AnimElemTime(1), 256 - 16 * AnimElemTime(1)
+
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = AnimElem = 2
+value = S7040,0
+channel = 0
+ignorehitpause = 1
 
 [State 2013, Shade]
 type = EnvShake
@@ -1502,6 +1520,12 @@ sprpriority = 2
 juggle = 14
 anim = 7253
 velset = 5, 0
+
+[State 1100, JumpSnd]
+type = PlaySnd
+trigger1 = !Time
+value = S7000,1
+ignorehitpause = 1
 
 [State 2013, Shade]
 type = EnvShake
@@ -1545,6 +1569,12 @@ ctrl = 0
 sprpriority = 2
 juggle = 14
 anim = 7255
+
+[State 200, Explod]
+type = PlaySnd
+trigger1 = Time % 23 = 7
+trigger2 = Time % 23 = 18
+value = S7040,1
 
 [State 200, Explod]
 type = Explod
@@ -1683,10 +1713,22 @@ time = 80
 movetime = 80
 anim = -1
 pos = 0, -20
-sound = S7010,2
+sound = -1
 p2defmul = 1
 darken = 0
 
+[State 2110, Snd]
+type = PlaySnd
+trigger1 = !Time
+value = S7200,0
+channel = 0
+
+
+[State 2110, Snd]
+type = PlaySnd
+trigger1 = Time = 40
+value = S7200,1
+channel = 0
 
 [State 2110, VarSet]
 type = VarSet

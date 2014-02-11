@@ -1164,6 +1164,14 @@ anim = 7141
 velset = 0, 0
 sprpriority = 2
 
+
+[State 1000, Fade]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,2
+channel = 0
+ignorehitpause = 1
+
 [State 412, Angle]
 Type = VarSet
 Trigger1 = 1

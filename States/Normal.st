@@ -1092,6 +1092,13 @@ facing = 1
 keyctrl = 0
 ownpal = 1
 
+[State 802, LifeAdd]
+type = PlaySnd
+trigger1 = Time = 35
+trigger2 = Time = 47
+trigger3 = Time = 59
+value = S7020,5
+
 [State 801, push]
 type = VarAdd
 trigger1 = AnimElemNo(0) = 1
@@ -1128,26 +1135,26 @@ value = 2
 
 [State 802, LifeAdd]
 type = LifeAdd
-trigger1 = Time = 26
-trigger2 = Time = 38
-trigger3 = Time = 50
+trigger1 = Time = 35
+trigger2 = Time = 47
+trigger3 = Time = 59
 value = -27
 kill = Time > 60
 
 [State 802, Shake]
 type = EnvShake
-trigger1 = Time = 26
-trigger2 = Time = 38
-trigger3 = Time = 50
+trigger1 = Time = 35
+trigger2 = Time = 47
+trigger3 = Time = 59
 time = 5
 freq = 120
 ampl = 5
 
 [State 802, Shake]
 type = PalFX
-trigger1 = Time = 26
-trigger2 = Time = 38
-trigger3 = Time = 50
+trigger1 = Time = 35
+trigger2 = Time = 47
+trigger3 = Time = 59
 add = 32, 48, 164
 color = 0
 time = 12
@@ -1273,6 +1280,14 @@ ctrl = 0
 anim = 7141
 velset = 0, 0
 sprpriority = 2
+
+
+[State 1000, Fade]
+type = PlaySnd
+trigger1 = !Time
+value = S7100,2
+channel = 0
+ignorehitpause = 1
 
 [State 412, Angle]
 Type = VarSet
