@@ -54,13 +54,21 @@ trigger1 = PrevStateNo != 11778
 source = 1, 1
 dest = 2, (Parent, palno)
 
-[State 6965]
-Type=ChangeAnim
-Trigger1 = anim != Root,anim
-trigger2 = AnimElemNo(0) != Root, AnimElemNo(0)
-value = Root,anim
-elem = Root, AnimElemNo(0)
-ignorehitpause=1
+[State 3510, Elem]
+Type = ChangeAnim
+trigger1 = root, selfanimexist(Root, Anim)
+trigger1 = ifelse((root, movetype = H), (root, stateno = [5000, 5300]), 1)
+trigger1 = Anim != Root, Anim || AnimElemNo(0) != Root, AnimElemNo(0)
+Value = Root, Anim
+Elem = Root, AnimElemNo(0)
+ignorehitpause = 1
+
+[State 775, customstatesanim]
+type = AssertSpecial
+trigger1 = root, movetype = H && (root, stateno != [5000, 5300])
+trigger2 = !root, selfanimexist(root, anim)
+flag = invisible
+ignorehitpause = 1
 
 [State 6965]
 Type=Trans
