@@ -658,8 +658,8 @@ trigger1 = ctrl
 type = ChangeState
 value = 1030
 triggerall = !NumHelper(1030)
+triggerall = StateType != A && Power >=500
 triggerall = Command = "dba" || Command = "dbb" || Command = "dbc" 
-trigger1 = statetype != A
 trigger1 = ctrl
 ;---------------------------------------------------------------------------
 [State -1, Aura]
