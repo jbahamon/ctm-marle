@@ -17,7 +17,12 @@ facep2 = 1
 [State 1010, Strength]
 type = VarSet
 trigger1 = !Time
-var(0) = IfElse(command = "qcfc", 2, IfElse(command = "qcfb", 1, 0))
+var(0) = IfElse(command = "bfc", 2, IfElse(command = "bfb", 1, 0))
+
+[State 1000, Anim]
+type = ChangeAnim
+trigger1 = !Time
+value = 1000 + Var(0)
 
 [State 1100, JumpSnd]
 type = PlaySnd
@@ -73,6 +78,13 @@ type = VarSet
 trigger1 = !Time
 var(0) = parent, var(0)
 
+
+[State 1021, Strength]
+type = ChangeAnim
+trigger1 = !Time
+value = 7101 + Var(0)
+
+
 [State 1021, HitOverride]
 type = HitOverride
 trigger1 = 1
@@ -91,7 +103,7 @@ ignorehitpause = 1
 [State 1021, Vel]
 type = VelSet
 trigger1 = !Time
-X = 0.8 + 0.4 * Var(0)
+X = IfElse(Var(0) = 0, 2.5, IfElse(Var(0) = 1, 3, 5))
 persistent = 0
 
 [State 200, Dampen]
@@ -108,24 +120,25 @@ triggerall = !MoveReversed
 trigger1 = Time > 0
 priority = 6, Hit
 attr = S,SP
-damage = floor(50* parent, fvar(39)), 4
+damage = floor((50 + 10 * Var(0))* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
 hitsound = -1
 guardflag = MA
-pausetime = 0, 26
+pausetime = 0, 20
 sparkno = -1
 ground.type = High
 ground.slidetime = 20
-ground.hittime = 10
-ground.velocity = -1, -1
-air.velocity  = -1, -1
+ground.hittime = 20 + IfElse(Var(0) = 2, -1, IfElse(Var(0) = 1, 2, 4))
+guard.hittime = 20 + IfElse(Var(0) = 2, -4, IfElse(Var(0) = 1, -2, 0))
+ground.velocity = - IfElse(Var(0) = 2, 4, IfElse(Var(0) = 1, 2, 1)), -IfElse(Var(0) = 2, 3, IfElse(Var(0) = 1, 1, 0))
+air.velocity  = - IfElse(Var(0) = 2, 4, IfElse(Var(0) = 1, 2, 1)),-IfElse(Var(0) = 2, 3, IfElse(Var(0) = 1, 1, 0))
 air.fall = 0
 p2facing = 1
 palfx.invertall = 0
 palfx.color = 0
 palfx.add = 80, 80, 180
-palfx.time = 26
+palfx.time = 40
 guard.dist = 100
 envshake.time = 8
 envshake.freq = 120
@@ -134,10 +147,9 @@ getpower = IfElse(Parent, Var(21) > 0, 0, 20)
 
 [State 1022, Explod]
 type = Explod
-trigger1 = GameTime % (9 - Var(0)) = 0
+trigger1 = GameTime % IfElse(Var(0) = 2, 4, IfElse(Var(0) = 1, 5, 7)) = 1
 trigger1 = !MoveContact
-trigger1 = Time < 90
-anim = 7100
+anim = 7106 ;+ Var(0)
 ID = 1001
 pos = 7 + Random % 3, 0
 postype = p1 ;p2,front,back,left,right
@@ -153,9 +165,10 @@ ontop = 0
 ownpal = 1
 removeongethit = 0
 
-[State 1021, ChangeState]
+[State 1001, End]
 type = DestroySelf
-trigger1 = Time > 120
+trigger1 = !AnimTime
+trigger2 = Pos X != [-240, 240]
 ignorehitpause = 1
 
 [State 1021, ChangeState]
@@ -172,7 +185,7 @@ physics = N
 movetype = I
 velset = 0,0
 ctrl = 0
-anim = 7102
+anim = 7104
 sprpriority = 4
 
 [State 1000, Fade]
@@ -203,7 +216,7 @@ ignorehitpause = 1
 
 [State 1001, End]
 type = DestroySelf
-trigger1 = Time > 32
+trigger1 = Time >= 32
 ignorehitpause = 1
 
 ;---------------------------------------------------------------------------
@@ -222,7 +235,7 @@ facep2 = 1
 [State 1010, Strength]
 type = VarSet
 trigger1 = !Time
-var(0) = ifelse(command = "dbc", 2, ifelse(command = "dbb", 1, 0))
+var(0) = ifelse(command = "ddc", 2, ifelse(command = "ddb", 1, 0))
 
 [State 1100, JumpSnd]
 type = PlaySnd
@@ -342,7 +355,7 @@ ctrl = 1
 ; Provoke
 [Statedef 1020]
 type    = S
-movetype= A
+movetype= I
 physics = S
 juggle  = 3
 ctrl = 0
@@ -350,10 +363,32 @@ anim = 1020
 sprpriority = 1
 facep2 = 1
 
-[State 1010, Strength]
-type = VarSet
-trigger1 = !Time
-var(0) = IfElse(command = "dfc", 2, IfElse(command = "dfb", 1, 0))
+[State 1021, Shade]
+type = PalFX
+trigger1 = Time = [1, 4]
+time = 1
+color = 256 - ((Time - 1) * 64)
+add = 0, (Time - 1) * 16, (Time - 1) * 32
+mul = 256, 256, 256
+ignorehitpause = 1
+
+[State 1021, Shade]
+type = PalFX
+trigger1 = AnimElemNo(0) = [2, 5]
+time = 1
+color = 0
+add = 0, 64, 128
+mul = 256, 256, 256
+ignorehitpause = 1
+
+[State 1021, Shade]
+type = PalFX
+trigger1 = AnimElemTime(6) = [0, 16] 
+time = 1
+color = AnimElemTime(6) * 16
+add = 0, 64 - (AnimElemTime(6) - 1) * 4, 128 - (AnimElemTime(6) - 1) * 8
+mul = 256, 256, 256
+ignorehitpause = 1
 
 [State 1100, JumpSnd]
 type = PlaySnd
@@ -365,7 +400,7 @@ ignorehitpause = 1
 [State 1020, Reversal]
 type = ReversalDef
 trigger1 = AnimElem = 2
-reversal.attr = SCA, AA
+reversal.attr = SCA, AA, AP
 p1stateno = 1021
 pausetime = 0, 0
 sparkno = -1
@@ -378,7 +413,7 @@ trigger1 = AnimElemTime(2) >= 0 && AnimElemTime(5) < 0
 slot = 1
 time = 1
 stateno = 1021
-attr = SCA, NP, SP, HP
+attr = SCA, AA, AP
 ignorehitpause = 1
 
 [State 1040, End]
@@ -447,6 +482,52 @@ anim = 1022
 sprpriority = 2
 facep2 = 1
 
+[State 420, Explod]
+type = Explod
+trigger1 = NumExplod(1025) < 4
+trigger1 = Time < 4
+anim = 7016 + Random % 2
+ID = 1025
+pos = 0, Floor(-Pos Y)
+postype = p1  ;p2,front,back,left,right
+facing = 1
+vfacing = 1
+bindtime = 1
+vel = -2 * Random/1000.0, -2 - 2 * Random/1000.0
+accel = 0,0.4
+removetime = -2
+scale = 1,1
+sprpriority = 2
+ontop = 0
+shadow = -1
+ownpal = 1
+removeongethit = 1
+ignorehitpause = 1
+
+
+[State 420, Explod]
+type = Explod
+trigger1 = Time < 4
+trigger1 = NumExplod(1025) < 4
+anim = 7016 + Random % 2
+ID = 1025
+pos = 0, Floor(-Pos Y)
+postype = p1  ;p2,front,back,left,right
+facing = 1
+vfacing = 1
+bindtime = 1
+vel = 2 * Random/1000.0, -2 - 2 * Random/1000.0
+accel = 0,0.4
+removetime = -2
+scale = 1,1
+sprpriority = 2
+ontop = 0
+shadow = -1
+ownpal = 1
+removeongethit = 1
+ignorehitpause = 1
+
+
 [State 1021, Shade]
 type = PalFX
 trigger1 = 1
@@ -513,26 +594,26 @@ trigger1 = !Time
 attr = S, SA
 hitflag = MA
 animtype = Hard
-damage = 45, 10
+damage = 50, 10
 getpower = 0, 0
 guardflag = MA
 sparkno = -1
 hitsound = S7100,2
-pausetime = 0, 80
+pausetime = 0, 150
 guardsound = S0, 100
 ground.type = Low
 air.type = Low
-ground.slidetime = 35
-ground.hittime = 35
+ground.slidetime = 150
+ground.hittime = 150
+guard.hittime = 20
 ground.velocity = -1, -3
 air.velocity = -1, -3
-fall = 1
-air.fall = 1
-fall.recover = 0
+fall = 0
+air.fall = 0
 forcestand = 1
 palfx.add = 0, 64, 128
 palfx.color = 0
-palfx.time = 60
+palfx.time = 150
 ignorehitpause = 1
 
 
@@ -565,21 +646,28 @@ ignorehitpause = 1
 [State 1010, Strength]
 type = VarSet
 trigger1 = !Time
-var(0) = IfElse(command = "dfc", 2, IfElse(command = "dfb", 1, 0))
+var(0) = IfElse(command = "hcbc", 2, IfElse(command = "hcbb", 1, 0))
+
+[State 1100, JumpSnd]
+type = ChangeAnim
+trigger1 = !Time
+value = 1025 + Var(0)
+ignorehitpause = 1
+
 
 [State 1100, JumpSnd]
 type = PlaySnd
-trigger1 = AnimElem = 3
+trigger1 = AnimElem = 2
 value = S7000,1
 ignorehitpause = 1
 
 [State 1000, Pawnch]
 type = Helper
-trigger1 = AnimElem = 6
+trigger1 = AnimElem = 3
 name = "Ice Riser"
 ID = 1025
 stateno = 1026
-pos = 20 + 30 * var(0), 0
+pos = 20, 10
 postype = p1    ;p2,front,back,left,right
 facing = 1
 keyctrl = 0
@@ -588,7 +676,7 @@ persistent = 0
 
 [State 1040, End]
 type = ChangeState
-trigger1 = AnimElemNo(0) > 6 && !NumHelper(1020)
+trigger1 = !AnimTime
 value = 0
 ctrl = 1
 
@@ -599,8 +687,69 @@ movetype= A
 physics = N
 juggle  = 3
 ctrl = 0
+velset = 0, -8
 anim = 7120
 sprpriority = 2
+
+[State 1021, Shade]
+type = PalFX
+trigger1 = 1
+time = 1
+color = 0
+add = 0, 32, 128
+mul = 256, 256, 256
+ignorehitpause = 1
+
+[State 420, Explod]
+type = Explod
+trigger1 = NumExplod(1025) < 4
+trigger1 = Time < 4
+anim = 7016 + Random % 2
+ID = 1025
+pos = 0, Floor(-Pos Y)
+postype = p1  ;p2,front,back,left,right
+facing = 1
+vfacing = 1
+bindtime = 1
+vel = -2 * Random/1000.0, -2 - 2 * Random/1000.0
+accel = 0,0.4
+removetime = -2
+scale = 1,1
+sprpriority = 2
+ontop = 0
+shadow = -1
+ownpal = 1
+removeongethit = 1
+ignorehitpause = 1
+
+
+[State 420, Explod]
+type = Explod
+trigger1 = Time < 4
+trigger1 = NumExplod(1025) < 4
+anim = 7016 + Random % 2
+ID = 1025
+pos = 0, Floor(-Pos Y)
+postype = p1  ;p2,front,back,left,right
+facing = 1
+vfacing = 1
+bindtime = 1
+vel = 2 * Random/1000.0, -2 - 2 * Random/1000.0
+accel = 0,0.4
+removetime = -2
+scale = 1,1
+sprpriority = 2
+ontop = 0
+shadow = -1
+ownpal = 1
+removeongethit = 1
+ignorehitpause = 1
+
+[State 1100, JumpSnd]
+type = VelMul
+trigger1 = 1
+Y = 0.9
+ignorehitpause = 1
 
 [State 1021, Strength]
 type = VarSet
@@ -626,10 +775,10 @@ ignorehitpause = 1
 type = HitDef
 triggerall = !MoveContact
 triggerall = !MoveReversed
-trigger1 = Time > 0
+trigger1 = Time > 4
 priority = 6, Hit
 attr = A,SP
-damage = 50* parent, fvar(39), 4
+damage = Floor((110 + 30 * Var(0))* parent, fvar(39)), 4
 animtype = Hard
 hitflag = MAF
 guardflag = MA
@@ -638,10 +787,12 @@ sparkno = -1
 ground.type = High
 ground.slidetime = 20
 ground.hittime = 10
+guard.hittime = IfElse(Var(0) = 2, 15, IfElse(Var(0) = 1, 15, 16))
 ground.velocity = 0, -6
 air.velocity  = 0, -6
 fall = 1
 air.fall = 1
+fall.recover = 0
 p2facing = 1
 palfx.invertall = 0
 palfx.color = 0
@@ -650,7 +801,7 @@ palfx.time = 26
 guard.dist = 100
 envshake.time = 8
 envshake.freq = 120
-envshake.ampl = 2
+envshake.ampl = 4
 getpower = IfElse(Parent, Var(21) > 0, 0, 20)
 
 [State 200, Dampen]
@@ -668,37 +819,43 @@ ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = Trans
-trigger1 = AnimElemNo(0) < 9
-trans = add
+trigger1 = Time < 4
+trans = addalpha
+alpha = 64 * Time, 256
 ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = Trans
-trigger1 = AnimElemNo(0) = 9
+trigger1 = Time >= 4
 trans = addalpha
-alpha = 256 - AnimElemTime(9) * 8, 256
+alpha = 256, 256
 ignorehitpause = 1
 
 [State 1021, ChangeState]
-type = DestroySelf
-trigger1 = !AnimTime
+type = ChangeState
+trigger1 = Time > (4 + IfElse(Var(0) = 2, 32, IfElse(Var(0) = 1, 27, 23)))
+value = 1027
+ctrl = 0
 ignorehitpause = 1
 
-; Ice Spike
+; Ice Spike End
 [Statedef 1027]
 type    = S
 movetype= A
 physics = N
 juggle  = 3
 ctrl = 0
-anim = 7120
+anim = 7121
+velset = 0
 sprpriority = 2
 
-[State 1021, Strength]
-type = ChangeAnim
-trigger1 = !Time
-value = 7120
-elem = 9
+[State 1021, Shade]
+type = PalFX
+trigger1 = 1
+time = 1
+color = 0
+add = 0, 32, 128
+mul = 256, 256, 256
 ignorehitpause = 1
 
 [State 1021, HB]
@@ -710,20 +867,20 @@ ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = AngleDraw
-trigger1 = 1
+trigger1 = Time > 0
 scale = 0.5, 0.5
 ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = Trans
-trigger1 = AnimElemNo(0) = 9
+trigger1 = 1
 trans = addalpha
-alpha = 256 - AnimElemTime(9) * 8, 256
+alpha = 256 - Time * 32, 256
 ignorehitpause = 1
 
 [State 1021, ChangeState]
 type = DestroySelf
-trigger1 = !AnimTime
+trigger1 = Time >= 8
 ignorehitpause = 1
 
 
@@ -740,7 +897,6 @@ anim = 1030
 sprpriority = 2
 facep2 = 1
 velset = 0,0
-poweradd = -500
 
 [State 1030, Jump]
 type = PlaySnd
@@ -795,7 +951,7 @@ ignorehitpause = 1
 [State 1002, Vertical Speed]
 type = VelSet
 trigger1 = !Time
-X = 3
+X = 6
 
 [State 1010, hitdef]
 type = HitDef
@@ -803,8 +959,8 @@ triggerall = !MoveContact
 triggerall = !MoveReversed
 trigger1 = Time > 0
 priority = 6, Hit
-attr = A,SP
-damage = 10, 4
+attr = S,SP
+damage = 50 + Var(0)*10, 4
 animtype = Hard
 hitflag = MAF
 hitsound = S7020,4
@@ -815,6 +971,7 @@ ground.type = High
 ground.slidetime = 20
 ground.hittime = 20
 ground.velocity = 0, 0
+guard.hittime = 20
 air.velocity = 0, 0
 air.fall = 1
 fall.recover = 1
@@ -847,7 +1004,7 @@ ignorehitpause = 1
 
 [State 1010, burst]
 type = DestroySelf
-trigger1 = Time >= 60
+trigger1 = Pos X != [-240, 240]
 ignorehitpause = 1
 
 ;Siren Shot Fade
@@ -920,19 +1077,19 @@ ignorehitpause = 1
 type = TargetState
 trigger1 = Target, StateNo != 1034 
 trigger1 = Target, Life
-trigger1 = Time < 200
+trigger1 = Time < 137
 value = 1034
 ignorehitpause = 1
 
 [State 1032]
 type = TargetState
-trigger1 = Time > 200 || !(Target, Life)
+trigger1 = Time > 137 || !(Target, Life)
 value = 1035
 ignorehitpause = 1
 
 [State 1032]
 type = DestroySelf
-trigger1 = Time > 200 || !(Target, Life)
+trigger1 = Time > 137 || !(Target, Life)
 ignorehitpause = 1
 
 ;Stopped
@@ -959,9 +1116,9 @@ sinadd = 120, 120, 120,12
 type = HitOverride
 trigger1 = 1
 time = 1
-attr = SCA, AA, AP
+attr = SCA
 stateno = 1034
-
+ignorehitpause = 1
 
 [State 3100, 4] ;Are you dead?
 type = SelfState

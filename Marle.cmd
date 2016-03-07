@@ -278,6 +278,89 @@ time = 32
 
 ;-| Special Motions |------------------------------------------------------
 
+
+[Command]
+name = "hcba"
+command = ~F, DF, D, DB, B, a
+time = 30
+[Command]
+name = "hcbb"
+command = ~F, DF, D, DB, B, b
+time = 30
+[Command]
+name = "hcbc"
+command = ~F, DF, D, DB, B, c
+time = 30
+[Command]
+name = "hcba"
+command = ~F, DF, D, DB, B, ~a
+time = 30
+[Command]
+name = "hcbb"
+command = ~F, DF, D, DB, B, ~b
+time = 30
+[Command]
+name = "hcbc"
+command = ~F, DF, D, DB, B, ~c
+time = 30
+
+[Command]
+name = "hcfa"
+command = ~B, DB, D, DF, F, a
+time = 30
+[Command]
+name = "hcfb"
+command = ~B, DB, D, DF, F, b
+time = 30
+[Command]
+name = "hcfc"
+command = ~B, DB, D, DF, F, c
+time = 30
+[Command]
+name = "hcfa"
+command = ~B, DB, D, DF, F, ~a
+time = 30
+[Command]
+name = "hcfb"
+command = ~B, DB, D, DF, F, ~b
+time = 30
+[Command]
+name = "hcfc"
+command = ~B, DB, D, DF, F, ~c
+time = 30
+
+[Command]
+name = "bfa"
+command = ~30$B, F, a
+time = 15
+
+
+[Command]
+name = "bfb"
+command = ~30$B, F, b
+time = 15
+
+[Command]
+name = "bfc"
+command = ~30$B, F, c
+time = 15
+
+[Command]
+name = "bfa"
+command = ~30$B, F, ~a
+time = 15
+
+[Command]
+name = "bfb"
+command = ~30$B, F, ~b
+time = 15
+
+[Command]
+name = "bfc"
+command = ~30$B, F, ~c
+time = 15
+
+
 [Command]
 name = "qcba"
 command =  ~D, DB, B, a
@@ -439,6 +522,43 @@ time = 15
 name = "qcfc"
 command = ~D, DF, F, c
 time = 15
+
+
+[Command]
+name = "dda"
+command = ~D, D, a
+time = 15
+
+
+[Command]
+name = "ddb"
+command = ~D, D, b
+time = 15
+
+
+[Command]
+name = "ddc"
+command = ~D, D, c
+time = 15
+
+
+[Command]
+name = "dda"
+command = ~D, D, ~a
+time = 15
+
+
+[Command]
+name = "ddb"
+command = ~D, D, ~b
+time = 15
+
+
+[Command]
+name = "ddc"
+command = ~D, D, ~c
+time = 15
+
 
 ;-| Double Tap |-----------------------------------------------------------
 [Command]
@@ -617,8 +737,9 @@ triggerall = Power >= 1000
 triggerall = !NumHelper(2020)
 trigger1 = statetype != A
 trigger1 = ctrl
-trigger2 = ( StateNo = [200,299] ) && MoveHit
-trigger3 = ( StateNo = [400,499] ) && MoveHit
+trigger2 = MoveContact
+trigger2 = StateNo = 200 || StateNo = 400
+
 ;---------------------------------------------------------------------------
 [State -1, Guardia Soldiers]
 type = ChangeState
@@ -628,8 +749,9 @@ triggerall = Power >= 1000
 triggerall = !NumHelper(2000)
 trigger1 = statetype != A
 trigger1 = ctrl
-trigger2 = ( StateNo = [200,299] ) && MoveHit
-trigger3 = ( StateNo = [400,499] ) && MoveHit
+trigger2 = MoveContact
+trigger2 = StateNo = 200 || StateNo = 400
+
 ;---------------------------------------------------------------------------
 [State -1, Ice II]
 type = ChangeState
@@ -639,8 +761,9 @@ triggerall = Power >= 1000
 triggerall = !NumHelper(2010)
 trigger1 = statetype != A
 trigger1 = ctrl
-trigger2 = ( StateNo = [200,299] ) && MoveHit
-trigger3 = ( StateNo = [400,499] ) && MoveHit
+trigger2 = MoveContact
+trigger2 = StateNo = 200 || StateNo = 400
+
 ;---------------------------------------------------------------------------
 
 ;===========================================================================
@@ -650,7 +773,7 @@ trigger3 = ( StateNo = [400,499] ) && MoveHit
 type = ChangeState
 value = 1020
 triggerall = !NumHelper(1020)
-triggerall =  command = "dfa" || command = "dfb" || command = "dfc" 
+triggerall = command = "dba" || command = "dbb" || command = "dbc"
 trigger1 = statetype != A
 trigger1 = ctrl
 ;--------------------------------------------------------------------------
@@ -658,35 +781,38 @@ trigger1 = ctrl
 type = ChangeState
 value = 1030
 triggerall = !NumHelper(1030)
-triggerall = StateType != A && Power >=500
-triggerall = Command = "dba" || Command = "dbb" || Command = "dbc" 
+triggerall = StateType != A
+triggerall = Command = "hcfa" || Command = "hcfb" || Command = "hcfc" 
 trigger1 = ctrl
+
 ;---------------------------------------------------------------------------
 [State -1, Aura]
 type = ChangeState
 value = 1010
-triggerall = command = "qcba" || command = "qcbb" || command = "qcbc"
+triggerall = command = "dda" || command = "ddb" || command = "ddc"
 triggerall = statetype != A 
 trigger1 = ctrl
 ;---------------------------------------------------------------------------
 [State -1, Ice]
 type = ChangeState
 value = 1000
-triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
+triggerall = command = "bfa" || command = "bfb" || command = "bfc"
 triggerall = roundstate = 2 && statetype != A 
 triggerall = !NumHelper(1000) || (NumHelper(1000) = 1 && Var(21))
 trigger1 = ctrl 
-trigger2 = (stateno = [200, 299]) && MoveContact
+trigger2 = MoveContact
+trigger2 = StateNo = 200 || StateNo = 400
+
 ;---------------------------------------------------------------------------
 [State -1, Ice Spike]
 type = ChangeState
-value = 1040
-triggerall = command = "qcfa" || command = "qcfb" || command = "qcfc"
-triggerall = roundstate = 2 && statetype = A 
-triggerall = !NumHelper(1040) || (NumHelper(1040) = 1 && Var(21))
+value = 1025
+triggerall =  command = "hcba" || command = "hcbb" || command = "hcbc" 
+triggerall = roundstate = 2 && statetype != A 
+triggerall = !NumHelper(1025) || (NumHelper(1025) = 1 && Var(21))
 trigger1 = ctrl
-trigger2 = (stateno = [600, 699]) && MoveContact
-
+trigger2 = MoveContact
+trigger2 = StateNo = 200 || StateNo = 400
 
 ;===========================================================================
 ; Throws, Rolls, Etc
@@ -724,11 +850,10 @@ type = ChangeState
 value = 210
 triggerall = command = "b"
 triggerall = command != "holddown"
+triggerall = !NumProjID(210)
 trigger1 = statetype = S
 trigger1 = ctrl
-trigger2 = (stateno = 200) 
-trigger2 = movecontact
-trigger3 = (StateType != A) && (MoveContact) && (Var(21) > 0)
+trigger2 = (StateType != A) && (MoveContact) && (Var(21) > 0)
 
 ;---------------------------------------------------------------------------
 [State -1, Stand Strong]
@@ -739,9 +864,7 @@ triggerall = command != "holddown"
 triggerall = !NumProjID(220)
 trigger1 = statetype = S
 trigger1 = ctrl
-trigger2 = (stateno = 200) || (stateno = 210)
-trigger2 = movecontact
-trigger3 = (StateType != A) && (MoveContact) && (Var(21) > 0)
+trigger2 = (StateType != A) && (MoveContact) && (Var(21) > 0)
 
 ;---------------------------------------------------------------------------
 ;Taunt
@@ -761,9 +884,7 @@ triggerall = command = "a"
 triggerall = command = "holddown"
 trigger1 = statetype != A
 trigger1 = ctrl
-trigger2 = (stateno = 200)
-trigger2 = movecontact
-trigger3 = (StateType != A) && (MoveContact) && (Var(21) > 0)
+trigger2 = (StateType != A) && (MoveContact) && (Var(21) > 0)
 
 ;---------------------------------------------------------------------------
 ;Crouching Mid
@@ -774,9 +895,7 @@ triggerall = command = "b"
 triggerall = command = "holddown"
 trigger1 = statetype != A
 trigger1 = ctrl
-trigger2 = (stateno = 200) || (stateno = 210) || (stateno = 400) 
-trigger2 = movecontact
-trigger3 = (StateType != A) && (MoveContact) && (Var(21) > 0)
+trigger2 = (StateType != A) && (MoveContact) && (Var(21) > 0)
 
 ;---------------------------------------------------------------------------
 ;Crouching Strong
@@ -787,9 +906,7 @@ triggerall = command = "c"
 triggerall = command = "holddown"
 trigger1 = statetype != A
 trigger1 = ctrl
-trigger2 = (stateno = 400) || (stateno = 410) || (stateno = 200) || (stateno = 210)
-trigger2 = movecontact
-trigger3 = (StateType != A) && (MoveContact) && (Var(21) > 0)
+trigger2 = (StateType != A) && (MoveContact) && (Var(21) > 0)
 
 ;---------------------------------------------------------------------------
 ;Jump Light
@@ -799,10 +916,7 @@ value = 600
 triggerall = command = "a"
 trigger1 = statetype = A
 trigger1 = ctrl
-trigger2 = stateno = 600
-trigger2 = movecontact
-trigger2 = AnimElemTime(0) >= 7
-trigger3 = stateno = 1350 ;Air blocking
+trigger2 = stateno = 1350 ;Air blocking
 
 ;---------------------------------------------------------------------------
 ;Jump Mid
@@ -812,9 +926,7 @@ value = 610
 triggerall = command = "b"
 trigger1 = statetype = A
 trigger1 = ctrl
-trigger2 = stateno = 600
-trigger2 = movecontact
-trigger3 = stateno = 1350 ;Air blocking
+trigger2 = stateno = 1350 ;Air blocking
 
 ;---------------------------------------------------------------------------
 ;Jump Strong
@@ -824,6 +936,4 @@ value = 620
 triggerall = command = "c"
 trigger1 = statetype = A
 trigger1 = ctrl
-trigger2 = (stateno = 600) || (stateno = 610)
-trigger2 = movecontact
-trigger3 = stateno = 1350 ;Air blocking
+trigger2 = stateno = 1350 ;Air blocking
