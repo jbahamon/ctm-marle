@@ -621,7 +621,7 @@ ignorehitpause = 1
 [State 1021, ChangeState]
 type = VelSet
 trigger1 = !Time
-X = IfElse(Parent, Vel X > 0, Parent, Vel X, 0)
+X = 1 + IfElse(Parent, Vel X > 0, Parent, Vel X, 0)
 ignorehitpause = 1
 
 [State 1021, ChangeState]
