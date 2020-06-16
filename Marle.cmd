@@ -279,55 +279,109 @@ time = 32
 ;-| Special Motions |------------------------------------------------------
 
 
+
+
 [Command]
 name = "hcba"
-command = ~F, DF, D, DB, B, a
-time = 30
+command = F, D, B, a
+time = 60
 [Command]
 name = "hcbb"
-command = ~F, DF, D, DB, B, b
-time = 30
+command = F, D, B, b
+time = 60
 [Command]
 name = "hcbc"
-command = ~F, DF, D, DB, B, c
-time = 30
+command = F, D, B, c
+time = 60
 [Command]
 name = "hcba"
-command = ~F, DF, D, DB, B, ~a
-time = 30
+command = F, D, B, ~a
+time = 60
 [Command]
 name = "hcbb"
-command = ~F, DF, D, DB, B, ~b
-time = 30
+command = F, D, B, ~b
+time = 60
 [Command]
 name = "hcbc"
-command = ~F, DF, D, DB, B, ~c
-time = 30
+command = F, D, B, ~c
+time = 60
+[Command]
+name = "hcba"
+command = ~F, D, B, a
+time = 60
+[Command]
+name = "hcbb"
+command = ~F, D, B, b
+time = 60
+[Command]
+name = "hcbc"
+command = ~F, D, B, c
+time = 60
+[Command]
+name = "hcba"
+command = ~F, D, B, ~a
+time = 60
+[Command]
+name = "hcbb"
+command = ~F, D, B, ~b
+time = 60
+[Command]
+name = "hcbc"
+command = ~F, D, B, ~c
+time = 60
+
+;---
+
 
 [Command]
 name = "hcfa"
-command = ~B, DB, D, DF, F, a
-time = 30
+command = B, D, F, a
+time = 60
 [Command]
 name = "hcfb"
-command = ~B, DB, D, DF, F, b
-time = 30
+command = B, D, F, b
+time = 60
 [Command]
 name = "hcfc"
-command = ~B, DB, D, DF, F, c
-time = 30
+command = B, D, F, c
+time = 60
 [Command]
 name = "hcfa"
-command = ~B, DB, D, DF, F, ~a
-time = 30
+command = B, D, F, ~a
+time = 60
 [Command]
 name = "hcfb"
-command = ~B, DB, D, DF, F, ~b
-time = 30
+command = B, D, F, ~b
+time = 60
 [Command]
 name = "hcfc"
-command = ~B, DB, D, DF, F, ~c
-time = 30
+command = B, D, F, ~c
+time = 60
+[Command]
+name = "hcfa"
+command = ~B, D, F, a
+time = 60
+[Command]
+name = "hcfb"
+command = ~B, D, F, b
+time = 60
+[Command]
+name = "hcfc"
+command = ~B, D, F, c
+time = 60
+[Command]
+name = "hcfa"
+command = ~B, D, F, ~a
+time = 60
+[Command]
+name = "hcfb"
+command = ~B, D, F, ~b
+time = 60
+[Command]
+name = "hcfc"
+command = ~B, D, F, ~c
+time = 60
+;---
 
 [Command]
 name = "bfa"
@@ -769,14 +823,16 @@ trigger2 = StateNo = 200 || StateNo = 400
 ;===========================================================================
 ; Special Moves
 ;===========================================================================
-[State -1, Provoke]
+[State -1, Ice Spike]
 type = ChangeState
-value = 1020
-triggerall = !NumHelper(1020)
-triggerall = command = "dba" || command = "dbb" || command = "dbc"
-trigger1 = statetype != A
+value = 1025
+triggerall =  command = "hcba" || command = "hcbb" || command = "hcbc"
+triggerall = roundstate = 2 && statetype != A 
+triggerall = !NumHelper(1025) || (NumHelper(1025) = 1 && Var(21))
 trigger1 = ctrl
-;--------------------------------------------------------------------------
+trigger2 = MoveContact
+trigger2 = StateNo = 200 || StateNo = 400
+
 [State -1, Siren's Kiss]
 type = ChangeState
 value = 1030
@@ -785,14 +841,21 @@ triggerall = StateType != A
 triggerall = Command = "hcfa" || Command = "hcfb" || Command = "hcfc" 
 trigger1 = ctrl
 
-;---------------------------------------------------------------------------
+[State -1, Provoke]
+type = ChangeState
+value = 1020
+triggerall = !NumHelper(1020)
+triggerall = command = "dba" || command = "dbb" || command = "dbc"
+trigger1 = statetype != A
+trigger1 = ctrl
+
 [State -1, Aura]
 type = ChangeState
 value = 1010
 triggerall = command = "dda" || command = "ddb" || command = "ddc"
 triggerall = statetype != A 
 trigger1 = ctrl
-;---------------------------------------------------------------------------
+
 [State -1, Ice]
 type = ChangeState
 value = 1000
@@ -800,17 +863,6 @@ triggerall = command = "bfa" || command = "bfb" || command = "bfc"
 triggerall = roundstate = 2 && statetype != A 
 triggerall = !NumHelper(1000) || (NumHelper(1000) = 1 && Var(21))
 trigger1 = ctrl 
-trigger2 = MoveContact
-trigger2 = StateNo = 200 || StateNo = 400
-
-;---------------------------------------------------------------------------
-[State -1, Ice Spike]
-type = ChangeState
-value = 1025
-triggerall =  command = "hcba" || command = "hcbb" || command = "hcbc" 
-triggerall = roundstate = 2 && statetype != A 
-triggerall = !NumHelper(1025) || (NumHelper(1025) = 1 && Var(21))
-trigger1 = ctrl
 trigger2 = MoveContact
 trigger2 = StateNo = 200 || StateNo = 400
 

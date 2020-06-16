@@ -342,7 +342,7 @@ persistent = 0
 [State 1040, End]
 type = LifeAdd
 trigger1 = !AnimTime
-value = IfElse((Life + 40) <= Const(data.life), 40, Const(data.life) - Life)
+value = IfElse((Life + 100) <= Const(data.life), 100, Const(data.life) - Life)
 persistent = 0
 
 [State 1040, End]

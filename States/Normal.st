@@ -110,6 +110,11 @@ anim = 210
 sprpriority = 1
 facep2 = 1
 
+[State 220, 1]
+type = PlaySnd
+trigger1 = AnimElem = 3
+value = S7010,5
+
 [State 220, 2]
 type = Projectile
 trigger1 = Animelem = 3
@@ -120,7 +125,7 @@ projanim = 7018
 projhitanim = 7019
 projremanim = -1
 projremovetime = 9
-velocity = 5,-5
+velocity = 6,-6
 accel = 0, 0.4
 animtype  = Hard
 damage    = 45,0
@@ -207,7 +212,7 @@ projID = 220
 projanim = 7018
 projhitanim = 7019
 projremanim = -1
-projremovetime = 10
+projremovetime = 14 
 velocity = 8,0
 animtype  = Hard
 damage    = 60,0
@@ -329,6 +334,11 @@ anim = 410
 sprpriority = 1
 facep2 = 1
 
+[State 400, 1]
+type = PlaySnd
+trigger1 = AnimElem = 2
+value = S7000, 0
+
 [State 400, 2]
 type = HitDef
 trigger1 = Time = 0
@@ -405,7 +415,7 @@ ignorehitpause = 1
 
 [State 420, 1]
 type = PlaySnd
-trigger1 = AnimElem = 3
+trigger1 = AnimElem = 2
 value = S7010,5
 
 [State 400, 2]
@@ -924,6 +934,13 @@ type = VelSet
 trigger1 = AnimElem = 5
 X = -1
 persistent = 0
+
+[State 1000, Fade]
+type = PlaySnd
+trigger1 = AnimElem = 2
+value = S7100,1
+channel = 0
+ignorehitpause = 1
 
 [State 420, Explod]
 type = Helper
